@@ -589,13 +589,13 @@ $$
 
   假设 **旋转向量R** 表示一个绕 **单位向量n**，**角度为θ** 的旋转
 
-  - **旋转向量**到**旋转矩阵**:
+  - **旋转向量**到**旋转矩阵**:`罗德里格斯公式`
     $$
     \mathrm{R}=\cos\theta\mathrm{I}+(1-\cos\theta)\mathrm{nn}^\mathrm{T}+\sin\theta\mathrm{~n}^\mathrm{\wedge}
     $$
     其中：
 
-    - $n=(n_x,n_y,n_z)^T$：**单位旋转轴**，其中$n^\wedge$​是n的反对称矩阵，$n^\wedge=\begin{bmatrix}0&-n_z&n_y\\n_z&0&-n_x\\-n_y&n_x&0\end{bmatrix}$
+    - $n=(n_x,n_y,n_z)^T$：**单位旋转轴**，其中$n^\wedge$​是n的`反对称矩阵`，$n^\wedge=\begin{bmatrix}0&-n_z&n_y\\n_z&0&-n_x\\-n_y&n_x&0\end{bmatrix}$
     - $\theta$：旋转角
     - $I$：3×3 单位矩阵$\begin{bmatrix}1&0&0\\0&1&0\\0&0&1\end{bmatrix}$
 
@@ -1577,5 +1577,190 @@ $$
 
   
 
-  
+### 李代数的定义
+
+<span style="color:red;">每个李群都有与之对应的李代数。</span>李代数描述了李群的局部性质，准确地说，是单位元附近的**正切空间**。
+
+- **李代数的定义**：
+
+  `李代数`由一个`集合` $\mathrm{V}$，一个`数域` $\mathrm{F}$ 和一个`二元运算（也称为 李括号）` $[ , ]$ 组成。
+
+  **（ 李代数 = 一个可以做“`加法` + `数乘` + `特殊乘法（李括号）`”的`向量空间` ）**
+
+  - `集合 V`：集合就是一堆元素放在一起，如所有二维向量表示为$V={(x,y)∣x,y∈R}$。
+
+    在李代数中，`集合 V`就是李代数里的`元素空间`
+
+    **例如**：经典李代数 $\mathfrak{so}(3)$ 里面的 集合 $V$ 是 **所有 3×3 反对称矩阵**
+
+  - `数域 F`：允许你使用的数字类型
+
+    | 数域 | 含义   |
+    | ---- | ------ |
+    | R    | 实数   |
+    | C    | 复数   |
+    | Q    | 有理数 |
+
+  - `二元运算 [,]`：`二元`就是两个输入，李代数定义了一个新的`运算`叫**李括号**，写成[X,Y]
+
+- 如果它们满**足以下几条性质**，则称 $(\mathrm{V}, \mathrm{F}, [ , ])$ 为一个李代数，记作 $\mathfrak{g}$。
+
+  1. `封闭性` $\forall X, Y \in \mathrm{V}, [X, Y] \in \mathrm{V}$.
+  2. `双线性` $\forall X, Y, Z \in \mathrm{V}, a, b \in \mathrm{F}$，有：$$[X, aY + bZ] = a[X, Y] + b[X, Z], \quad [aX + bY, Z] = a[X, Z] + b[Y, Z].$$
+
+  3. `自反性` $\forall X \in \mathrm{V}, [X, X] = 0.$
+
+  4. `雅可比等价` $\forall X, Y, Z \in \mathrm{V}, [X, [Y, Z]] + [Z, [X, Y]] + [Y, [Z, X]] = 0.$
+
+
+  如果用**两个三维向量的叉积**举例：
+
+  - `封闭性`：三维向量的集合就是$\mathbb R^3$，李代数要求$[X,Y]\in V$，我们代入得$X\times Y\in\mathbb R^3$，所以成立！
+
+    （两个三维向量叉乘还是三维向量）
+
+  - `双线性`：我们可以假设$X=[x_1,x_2,x_3]$，$Y=[y_1,y_2,y_3]$，$Z=[z_1,z_2,z_3]$。直接代入公式：
+
+    - 李代数要求 $[X,aY+bZ]=a[X,Y]+b[X,Z]$
+
+      代入得
+      $$
+      \begin{aligned} X \times (aY + bZ) &= \begin{pmatrix} a(x_2y_3 - x_3y_2) + b(x_2z_3 - x_3z_2) \\[6pt] a(x_3y_1 - x_1y_3) + b(x_3z_1 - x_1z_3) \\[6pt] a(x_1y_2 - x_2y_1) + b(x_1z_2 - x_2z_1) \end{pmatrix} \\[15pt] &= a \begin{pmatrix} x_2y_3 - x_3y_2 \\ x_3y_1 - x_1y_3 \\ x_1y_2 - x_2y_1 \end{pmatrix} + b \begin{pmatrix} x_2z_3 - x_3z_2 \\ x_3z_1 - x_1z_3 \\ x_1z_2 - x_2z_1 \end{pmatrix} \\[15pt] &= a(X \times Y) + b(X \times Z) \end{aligned}
+      $$
+      证明得：
+      $$
+      \boxed{
+      X\times(aY+bZ)
+      =a(X\times Y)+b(X\times Z)
+      }
+      $$
+
+    - 李代数要求 $\quad[aX + bY, Z] = a[X, Z] + b[Y, Z]$
+
+      代入得
+      $$
+      \begin{aligned} (aX + bY) \times Z &=  \begin{pmatrix} (ax_2 + by_2)z_3 - (ax_3 + by_3)z_2 \\[6pt] (ax_3 + by_3)z_1 - (ax_1 + by_1)z_3 \\[6pt] (ax_1 + by_1)z_2 - (ax_2 + by_2)z_1 \end{pmatrix} \\[15pt] &= \begin{pmatrix} a(x_2z_3 - x_3z_2) + b(y_2z_3 - y_3z_2) \\[6pt] a(x_3z_1 - x_1z_3) + b(y_3z_1 - y_1z_3) \\[6pt] a(x_1z_2 - x_2z_1) + b(y_1z_2 - y_2z_1) \end{pmatrix} \\[15pt] &= a \begin{pmatrix} x_2z_3 - x_3z_2 \\ x_3z_1 - x_1z_3 \\ x_1z_2 - x_2z_1 \end{pmatrix} + b \begin{pmatrix} y_2z_3 - y_3z_2 \\ y_3z_1 - y_1z_3 \\ y_1z_2 - y_2z_1 \end{pmatrix} \\[15pt] &= a(X \times Z) + b(Y \times Z) \end{aligned}
+      $$
+
+      - 证明得：
+        $$
+        \boxed{
+        (aX+bY)\times Z =a(X\times Z)+b(Y\times Z)
+        }
+        $$
+
+  - 后面得性质也可以用`代入法`得方式来计算
+
+    
+
+### 李代数 $\mathfrak{so}(3)$
+
+之前提到的$\phi$，事实上是一种李代数。SO(3)对应的李代数是定义在$\mathbb{R}^3$上的向量，我们记作$\phi$。根据前面的推导，每个$\phi$都可以生成一个反对称矩阵：
+$$
+\boldsymbol{\Phi} = \phi^\wedge = \begin{bmatrix}
+0 & -\phi_3 & \phi_2 \\
+\phi_3 & 0 & -\phi_1 \\
+-\phi_2 & \phi_1 & 0
+\end{bmatrix} \in \mathbb{R}^{3\times 3}.
+$$
+在此定义下，两个向量$\phi_1, \phi_2$的李括号为
+$$
+[\phi_1, \phi_2] = (\boldsymbol{\Phi}_1 \boldsymbol{\Phi}_2 - \boldsymbol{\Phi}_2 \boldsymbol{\Phi}_1)^\vee.
+$$
+读者可以验证该定义下的李括号满足上面的几条性质。由于向量$\phi$与反对称矩阵是一一对应的，在不引起歧义的情况下，就说 **$\mathfrak{so}(3)$的元素是`三维向量`或者`三维反对称矩阵`**，不加区别：
+$$
+\mathfrak{so}(3) = \left\{ \phi \in \mathbb{R}^3, \boldsymbol{\Phi} = \phi^\wedge \in \mathbb{R}^{3\times 3} \right\}
+$$
+
+
+### 李代数 $\mathfrak{se}(3)$
+
+对于SE(3)，它也有对应的李代数$\mathfrak{se}(3)$。为节省篇幅，这里就不介绍如何引出$\mathfrak{se}(3)$了。与$\mathfrak{so}(3)$相似，$\mathfrak{se}(3)$位于$\mathbb{R}^6$空间（表示6维向量空间）中：
+$$
+\mathfrak{se}(3)=\left\{\boldsymbol{\xi}=\left[\begin{array}{c}
+\boldsymbol{\rho} \\
+\boldsymbol{\phi}
+\end{array}\right] \in \mathbb{R}^{6}, \boldsymbol{\rho} \in \mathbb{R}^{3}, \boldsymbol{\phi} \in \mathfrak{so}(3), \boldsymbol{\xi}^{\wedge}=\left[\begin{array}{cc}
+\boldsymbol{\phi}^{\wedge} & \boldsymbol{\rho} \\
+\boldsymbol{0}^{\mathrm{T}} & 0
+\end{array}\right] \in \mathbb{R}^{4 \times 4}\right\}
+$$
+
+- 我们把每个$\mathfrak{se}(3)$元素记作$\boldsymbol{\xi}$，它是一个`六维向量`。
+
+  - 前三维为`平移`**（但含义与变换矩阵中的平移不同，分析见后）**，记作$\boldsymbol{\rho}$；
+  - 后三维为`旋转`，记作$\boldsymbol{\phi}$，实质上是$\mathfrak{so}(3)$元素。
+
+- 同时，**我们拓展了$^\wedge$符号的含义**。在$\mathfrak{se}(3)$中，同样使用$^\wedge$符号，将一个六维向量转换成四维矩阵，<span style="color:red;">但这里不再表示反对称</span>：
+  $$
+  \boldsymbol{\xi}^{\wedge}=\left[\begin{array}{cc}
+  \boldsymbol{\phi}^{\wedge} & \boldsymbol{\rho} \\
+  \boldsymbol{0}^{\mathrm{T}} & 0
+  \end{array}\right] \in \mathbb{R}^{4 \times 4}.
+  $$
+  我们仍使用$^\wedge$和$^\vee$符号来指代“`从向量到矩阵`”和“`从矩阵到向量`”的关系，以保持和$\mathfrak{so}(3)$上的一致性。它们依旧是一一对应的。
+
+  读者可以简单地把$\mathfrak{se}(3)$理解成“**由一个平移加上一个$\mathfrak{so}(3)$元素构成的向量**”（尽管这里的$\boldsymbol{\rho}$还不直接是平移）。
+
+- 李代数$\mathfrak{se}(3)$亦有类似于$\mathfrak{so}(3)$的`李括号`：
+
+$$
+[\boldsymbol{\xi}_1, \boldsymbol{\xi}_2]=(\boldsymbol{\xi}_1^{\wedge}\boldsymbol{\xi}_2^{\wedge}-\boldsymbol{\xi}_2^{\wedge}\boldsymbol{\xi}_1^{\wedge})^{\vee}.
+$$
+
+
+
+## 指数与对数映射
+
+### $SO(3)$上的指数映射
+
+> [!NOTE]
+>
+> `exp()`：其实就是 **指数函数**。
+>
+> - **标量指数函数**：$e^x=1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\cdots$
+> - **矩阵指数函数**：就是把 $x$ 换成矩阵，$\exp(A)=I+A+\frac{A^2}{2!}+\frac{A^3}{3!}+\cdots$
+
+**现在来考虑第二个问题：如何计算$\exp(\phi^\wedge)?$**
+
+- 显然它是一个矩阵的指数，在李群和李代数中，称为`指数映射(Exponential Map)`。
+  任意矩阵的指数映射可以写成一个`泰勒展开`，但是只有**在`收敛`的情况下才会有结果**，其结果仍是一个矩阵：
+  $$
+  \exp(A)=\sum_{n=0}^\infty\frac1{n!}A^n.
+  $$
+  同样地，对 so(3) 中任意元素$\phi$,我们亦可按此方式定义它的指数映射：
+
+  $$
+  \exp(\phi^\wedge)=\sum_{n=0}^\infty\frac{1}{n!}(\phi^\wedge)^n.
+  $$
+
+- 推导$\exp(\phi^\wedge)=\sum_{n=0}^\infty\frac{1}{n!}(\phi^\wedge)^n.$的计算式子：
+
+  如果是直接根据式子$\exp(\phi^\wedge)=\sum_{n=0}^\infty\frac{1}{n!}(\phi^\wedge)^n.$来计算的话，我们没法直接计算。因为我们难以计算矩阵的无穷次幂。
+
+  下面我们要推导出一种计算指数映射的简便方法。
+
+  - 由于 **ϕ** 是`三维向量`，我们可以定义它的`模长`和它的`方向`，分别记作 *θ* 和 **a**，于是有$ϕ=θa$
+
+    其中，**$a$是一个长度为 1 的`方向向量`**，即$\|a\|=1$。对于`反对称矩阵`$a^\wedge$,有以下两条性质：
+    $$
+    \boldsymbol{a}^{\wedge}\boldsymbol{a}^{\wedge}=\begin{bmatrix}&-a_2^2-a_3^2&a_1a_2&a_1a_3\\&a_1a_2&-a_1^2-a_3^2&a_2a_3\\&a_1a_3&a_2a_3&-a_1^2-a_2^2\end{bmatrix}=\boldsymbol{a}\boldsymbol{a}^\mathrm{T}-\boldsymbol{I}
+    $$
+    
+
+    以及
+
+    $$
+    a^\wedge a^\wedge a^\wedge=a^\wedge(aa^\mathrm{T}-I)=-a^\wedge.
+    $$
+
+  - 这两个式子提供了处理 $\boldsymbol{a}^{\wedge}$ 高阶项的方法。我们可以把指数映射写成
+    $$
+    \begin{aligned}\exp\left(\phi^{\wedge}\right)&=\exp\left(\theta\boldsymbol{a}^{\wedge}\right)=\sum_{n=0}\frac{1}{n!}\left(\theta\boldsymbol{a}^{\wedge}\right)^{n}\\&=I+\theta a^{\wedge}+\frac{1}{2!}\theta^{2}a^{\wedge}a^{\wedge}+\frac{1}{3!}\theta^{3}a^{\wedge}a^{\wedge}a^{\wedge}+\frac{1}{4!}\theta^{4}(a^{\wedge})^{4}+...\\&=\boldsymbol{a}\boldsymbol{a}^{\mathrm{T}}-\boldsymbol{a}^{\wedge}\boldsymbol{a}^{\wedge}+\theta\boldsymbol{a}^{\wedge}+\frac{1}{2!}\theta^{2}\boldsymbol{a}^{\wedge}\boldsymbol{a}^{\wedge}-\frac{1}{3!}\theta^{3}\boldsymbol{a}^{\wedge}-\frac{1}{4!}\theta^{4}\left(\boldsymbol{a}^{\wedge}\right)^{2}+...\\&=\boldsymbol{aa}^{\mathrm{T}}+\underbrace{\left(\theta-\frac{1}{3!}\theta^{3}+\frac{1}{5!}\theta^{5}-...\right)}_{\sin\theta}\boldsymbol{a}^{\wedge}-\underbrace{\left(1-\frac{1}{2!}\theta^{2}+\frac{1}{4!}\theta^{4}-...\right)}_{\cos\theta}\boldsymbol{a}^{\wedge}\boldsymbol{a}^{\wedge}\\&=a^\wedge a^\wedge+I+\sin\theta a^\wedge-\cos\theta a^\wedge a^\wedge\\&=(1-\cos\theta)\boldsymbol{a}^\wedge a^\wedge+I+\sin\theta\boldsymbol{a}^\wedge\\&=\cos\theta\boldsymbol{I}+(1-\cos\theta)\boldsymbol{aa}^\mathrm{T}+\sin\theta\boldsymbol{a}^\mathrm{\wedge}.\end{aligned}
+    $$
+
+  - 最后我们得到之前用过的`罗德里格斯公式`：
+    $$
+    \exp(\theta\boldsymbol{a}^\wedge)=\cos\theta\boldsymbol{I}+(1-\cos\theta)\boldsymbol{a}\boldsymbol{a}^\mathrm{T}+\sin\theta\boldsymbol{a}^\wedge.
+    $$
 
