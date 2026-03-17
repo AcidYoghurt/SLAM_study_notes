@@ -1244,7 +1244,7 @@ $$
 
 - **背景：刚体运动的表示**
 
-  上一讲你学过三维空间中刚体运动的几种表示方式，比如：
+  上一讲我们学过三维空间中刚体运动的几种表示方式，比如：
 
   - **旋转矩阵 $R$**：3×3矩阵，表示旋转
   - **旋转向量**：轴角形式，用一个向量表示旋转轴和旋转角
@@ -1271,12 +1271,12 @@ $$
 
 上一讲，我们介绍了`旋转矩阵`和`变换矩阵`的定义
 
-- `三维旋转矩阵`构成了特殊正交群$SO(3)$
+- `三维旋转矩阵`构成了特殊正交群$SO(3)$（其中3代表了三维，如果是2维就是$SO(2)$）
   $$
   SO(3) = \left\{ R \in \mathbb{R}^{3 \times 3} \middle| RR^T = I, \det(R) = 1 \right\}
   $$
 
-- `变换矩阵`构成了特殊欧式群$SE(3)$
+- `三位变换矩阵`构成了特殊欧式群$SE(3)$（其中3代表了三维，如果是2维就是$SE(2)$）
   $$
   SE(3) = \left\{ T = \begin{bmatrix} R & t \\ 0^T & 1 \end{bmatrix} \in \mathbb{R}^{4 \times 4} \middle| R \in SO(3),\, t \in \mathbb{R}^3 \right\}
   $$
@@ -1333,27 +1333,27 @@ $$
 
 - **单位元（Identity）**
 
-  存在一个元素 $e$：
+  - 存在一个元素 $e$：
+
   $$
   ae=ea=a
   $$
-  在机器人里：
+  - **含义**：在机器人里，单位元表示**什么都不做**
 
-  - SO(3)：单位矩阵 $I$
-  - SE(3)：不动的位姿
+    - SO(3)：单位矩阵 $I$
 
-  意思：**什么都不做**
+    - SE(3)：不动的位姿
 
 - **逆元（Inverse）**
 
-  对每个元素 $a$，必须存在：
-  $$
-  a^{-1}
-  $$
-  满足：
-  $$
-  a a^{-1}=e
-  $$
+  - 对每个元素 $a$，必须存在：$a^{-1}$，满足$a a^{-1}=e$
+  - **含义**：坐标系转换的反方向
+  
+  - **例如**：
+  
+    存在一个元素$T_{wb}$，表示从 body（机器人）坐标系 → world（世界）坐标系。
+  
+    那么其逆元$T_{wb}^{-1} = T_{bw}$，表示从 world 坐标系 → body 坐标系
 
 
 
@@ -1371,7 +1371,7 @@ $$
   3. 幺元（单位元）：$\exists a_0\in A$, s.t. $\forall a\in A$, $a_0\cdot a= a\cdot a_0= a.$
   4. 逆：$\forall a\in A$, $\exists a^{- 1}\in A$, $s. t.$ $a\cdot a^{- 1}= a_0.$
 
-- `群`的例子：
+- **`群`的例子**：
 
   - 整数加法群 $(\mathbb{Z}, +)$
     - **封闭性**：两个整数相加还是整数 $2+3=5\in\mathbb{Z}$
@@ -1385,192 +1385,293 @@ $$
   - 特殊正交群 SO$( n)$ 也就是所谓的`旋转矩阵群`，其中 SO(2) 和 SO(3) 最为常见。
   - 特殊欧氏群 SE$( n)$ 也就是前面提到的 $n$ 维`欧氏变换`，如 SE(2)和 SE(3)。
 
-- `李群`
-
-  > `李群`是指具有连续（光滑）性质的群
-
-  - 对于 整数群$\mathbb{Z}$ 而言，因为整数集合$\mathbb{Z}=\{\dots,-2,-1,0,1,2,\dots\}$元素是一个一个分开的，所以是`离散`的。所以整数群不是李群
-  - 因为一个刚体能够`连续`地在空间中运动，所以对于 SO(*n*) 和 SE(*n*) 在实数空间上是`连续`的，所以它们是李群
-
   
+
+### 李群
+
+> `李群`是指具有连续（光滑）性质的群
+
+区分`离散`与`连续`：
+
+- 对于 整数群$\mathbb{Z}$ 而言，因为整数集合$\mathbb{Z}=\{\dots,-2,-1,0,1,2,\dots\}$元素是一个一个分开的，所以是`离散`的。所以整数群不是李群
+- 因为一个刚体能够`连续`地在空间中运动，所以对于 SO(*n*) 和 SE(*n*) 在实数空间上是`连续`的，所以它们是李群
+
+
 
 ### 李代数的引出
 
-考虑任意旋转矩阵 $R$，我们知道它满足：
-$$
-RR^{\mathrm{T}} = I
-$$
-现在，我们说，$R$ 是某个相机的旋转，它会随时间连续地变化，即为时间的函数：$R(t)$。由于它仍是旋转矩阵，有
-$$
-R(t)R(t)^{\mathrm{T}} = I
-$$
-在等式两边对时间求导，得到：
-$$
-\begin{align}
-\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
-+\boldsymbol{R}(t)\dot{\boldsymbol{R}}(t)^\mathrm{T}
-&= 0 \\
-\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
-&= -\boldsymbol{R}(t)\dot{\boldsymbol{R}}(t)^\mathrm{T} \\
-\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
-&= -\left(\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}\right)^\mathrm{T}
-\end{align}
-$$
-整理得：
-$$
-\dot{R}(t)R(t)^{\mathrm{T}} = -\left(\dot{R}(t)R(t)^{\mathrm{T}}\right)^{\mathrm{T}}
-$$
-可以看出 $\dot{R}(t)R(t)^{\mathrm{T}}$ 是一个`反对称矩阵`。
-
-> `反对称矩阵`：
->
-> 一个矩阵 $A$ 如果满足：
-> $$
-> A = -A^T
-> $$
-> 那么 矩阵A 叫**反对称矩阵（skew-symmetric matrix）**
-
-> `反对称矩阵 与 向量 之间的转换`
->
-> - **帽算子$\wedge$**：向量 -> 反对称矩阵
->
->   定义 向量a：
->   $$
->   \mathbf a=
->   \begin{bmatrix}
->   a_1\\a_2\\a_3
->   \end{bmatrix}
->   $$
->   对应 反对称矩阵：
->   $$
->   \mathbf a^\wedge
->   = 
->   A
->   =
->   \begin{bmatrix}
->   0 & -a_3 & a_2\\
->   a_3 & 0 & -a_1\\
->   -a_2 & a_1 & 0
->   \end{bmatrix}
->   $$
->   所以：
->   $$
->   a^\wedge = A
->   $$
->
-> - **vee算子$\vee$**：反对称矩阵 -> 向量
->
->   如果给你一个反对称矩阵
->   $$
->   A=
->   \begin{bmatrix}
->   0 & -a_3 & a_2\\
->   a_3 & 0 & -a_1\\
->   -a_2 & a_1 & 0
->   \end{bmatrix}
->   $$
->   就定义：
->   $$
->   A^\vee=
->   \begin{bmatrix}
->   a_1\\a_2\\a_3
->   \end{bmatrix}
->   $$
->   即：
->   $$
->   A^\vee=\mathbf a
->   $$
-
-于是，由于$\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}$是一个反对称矩阵，我们可以找到一个三维向量$\phi(t)\in\mathbb{R}^3$与之对应：
-$$
-\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}=\boldsymbol{\phi}(t)^\wedge
-$$
-等式两边右乘$R(t)$，由于$R$为`正交阵`，有：
-$$
-\begin{align}
-\dot{\boldsymbol{R}}(t)
-&=
-\phi(t)^{\wedge}\boldsymbol{R}(t)
-\\
-\dot{\boldsymbol{R}}(t)
-&=
-\begin{bmatrix}
-0 & -\phi_3 & \phi_2\\
-\phi_3 & 0 & -\phi_1\\
--\phi_2 & \phi_1 & 0
-\end{bmatrix}
-\boldsymbol{R}(t)
-\end{align}
-$$
-这里三维向量的 $\phi(t)$ 意义是`角速度向量`
-
-所以 **旋转的变化率由角速度决定**。
-
-
-
-那么如果在 $t=0$ 附近看旋转。我们假设**初始状态没有旋转**，即$R(t_0)=I$
-
-- 按照导数定义，可以把 $R(t)$ 在 $t=0$ 附近进行**一阶泰勒展开**：
+- 考虑任意旋转矩阵 $R$，我们知道它满足：
   $$
-  R(t)\approx R(t_0)+\dot R(t_0)(t-t_0)
+  RR^{\mathrm{T}} = I
   $$
-  代入：
+  现在，我们说，$R$ 是某个相机的旋转，它会随时间连续地变化，即为时间的函数：$R(t)$。由于它仍是旋转矩阵，有
+  $$
+  R(t)R(t)^{\mathrm{T}} = I
+  $$
+  在等式两边对时间求导，得到：
   $$
   \begin{align}
-  \dot R(t_0)
-  &= \phi(t_0)^\wedge R(t_0) \\
-  &= \phi(t_0)^\wedge I \\
-  &= \phi(t_0)^\wedge
+  \dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
+  +\boldsymbol{R}(t)\dot{\boldsymbol{R}}(t)^\mathrm{T}
+  &= 0 \\
+  \dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
+  &= -\boldsymbol{R}(t)\dot{\boldsymbol{R}}(t)^\mathrm{T} \\
+  \dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
+  &= -\left(\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}\right)^\mathrm{T}
   \end{align}
   $$
-
+  整理得：
   $$
-  t-t_0 = t-0 = t
+  \dot{R}(t)R(t)^{\mathrm{T}} = -\left(\dot{R}(t)R(t)^{\mathrm{T}}\right)^{\mathrm{T}}
+  $$
+  可以看出 $\dot{R}(t)R(t)^{\mathrm{T}}$ 是一个`反对称矩阵`。
+
+  > `反对称矩阵`：
+  >
+  > 一个矩阵 $A$ 如果满足：
+  > $$
+  > A = -A^T
+  > $$
+  > 那么 矩阵A 叫**反对称矩阵（skew-symmetric matrix）**
+
+
+
+- 于是，由于$\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}$是一个反对称矩阵，我们可以找到一个`三维向量`$\phi(t)\in\mathbb{R}^3$与之对应：
+  $$
+  \dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}=\boldsymbol{\phi}(t)^\wedge
   $$
 
-  得到：
+  > `反对称矩阵 与 向量 之间的转换`
+  >
+  > - **帽算子$\wedge$**：向量 -> 反对称矩阵
+  >
+  >   定义 向量a：
+  >   $$
+  >   \mathbf a=
+  >      \begin{bmatrix}
+  >      a_1\\a_2\\a_3
+  >      \end{bmatrix}
+  >   $$
+  >   对应 反对称矩阵：
+  >   $$
+  >   \mathbf a^\wedge
+  >   =
+  >   A
+  >   =
+  >   \begin{bmatrix}
+  >   0 & -a_3 & a_2\\
+  >   a_3 & 0 & -a_1\\
+  >   -a_2 & a_1 & 0
+  >   \end{bmatrix}
+  >   $$
+  >   所以：
+  >   $$
+  >   a^\wedge = A
+  >   $$
+  >
+  > - **vee算子$\vee$**：反对称矩阵 -> 向量
+  >
+  >   如果给你一个反对称矩阵
+  >   $$
+  >   A=
+  >   \begin{bmatrix}
+  >   0 & -a_3 & a_2\\
+  >   a_3 & 0 & -a_1\\
+  >   -a_2 & a_1 & 0
+  >   \end{bmatrix}
+  >   $$
+  >   就定义：
+  >   $$
+  >   A^\vee=
+  >   \begin{bmatrix}
+  >   a_1\\a_2\\a_3
+  >   \end{bmatrix}
+  >   $$
+  >   即：
+  >   $$
+  >   A^\vee=\mathbf a
+  >   $$
+
+  等式两边右乘$R(t)$，由于$R$为`正交阵`，有：
   $$
-  R(t)\approx I+\phi(0)^\wedge t
+  \begin{align}
+  \dot{\boldsymbol{R}}(t)
+  &=
+  \phi(t)^{\wedge}\boldsymbol{R}(t)
+  \\
+  \dot{\boldsymbol{R}}(t)
+  &=
+  \begin{bmatrix}
+  0 & -\phi_3 & \phi_2\\
+  \phi_3 & 0 & -\phi_1\\
+  -\phi_2 & \phi_1 & 0
+  \end{bmatrix}
+  \boldsymbol{R}(t)
+  \end{align}
   $$
-  **这个式子表示**：从`单位矩阵`出发，沿着 $\phi^\wedge$ 的方向移动。
+  **结论：这里三维向量的 $\phi(t)$ 意义是`角速度向量`**
 
-  所以 $\phi^\wedge$ 表示旋转在 $I$ 点的`切向方向`，$\phi$ 是 **切空间元素**
-  $$
-  ϕ∈Tangent Space(切空间)
-  $$
+  **推导**：
 
-- 什么是`切空间`？
+  - **从几何运动出发**
 
-  <img src="./assets/llustration-on-a-sphere-of-the-geodesics-and-the-tangent-planes.png" alt="Illustration on a sphere of the geodesics and the tangent planes | Download  Scientific Diagram" style="zoom: 50%;" />
+    - 假设 **惯性坐标系**（静止系）中有一个 **固定向量$x$**，它不随时间变化。
 
-  可以想象：
+    - 它在`旋转坐标`系中的表达为：
+      $$
+      y(t) = R(t)x
+      $$
+      其中：
 
-  - 所有`旋转`组成一个**弯曲空间**（流形）
-  - 单位矩阵是一个点
-  - 角速度 $\phi$ 是该点的切向方向
+      - `旋转坐标系`：以非惯性坐标系为观察坐标系。就像是你不再是站在路边看戏的观众（惯性系），而是直接跳上了一个正在旋转的旋转木马，并以此为基准来观察世界。
 
-  我们可以做一个假设：
+        例如在rviz中world是惯性系，而我在小车的base_link来观察其他坐标系，base_link就是旋转坐标系
 
-  - 假设在一段很小的时间内机器人做`匀角速度运动`，也就是说**角速度保持常数**：
+      - **$x$：**是向量在**惯性坐标系**（静止系）中的“真实”坐标。它是固定的，不随时间变化。
+      - **$R(t)$：**是一个**旋转矩阵**。它描述了随着时间的推移，旋转坐标系相对于静止坐标系转了多少度。它通常满足 $R^T R = I$。
+
+      - **$y(t)$：**是同一个向量在**旋转坐标系**中观察到的坐标。因为坐标系在转，所以即使 $x$ 没动，$y(t)$ 也会随时间变化。
+
+      现在对时间求导：
+      $$
+      \dot y(t) = \dot R(t)x
+      $$
+      代入我们在上面推导出来的 $\dot{\boldsymbol{R}}(t)=\phi(t)^{\wedge}\boldsymbol{R}(t)$，得到：
+      $$
+      \dot y(t) = \phi^\wedge R(t) x
+      $$
+      但因为上面的式子 $R(t)x = y(t)$，代入得：
+      $$
+      \dot y(t) = \phi(t)^\wedge  y(t)
+      $$
+      
+  
+  - `定理`：
+  
+    > **在三维欧氏空间 $\mathbb{R}^3$ 中**：
+    >
+    > 任意一个 $3\times3$ 的`反对称矩阵` $A$，都存在唯一一个`向量`$\omega \in \mathbb{R}^3$，使得：
+    >  $$
+    > A x = \omega \times x
+    > \quad \forall x \in \mathbb{R}^3
+    > $$
+  
+    根据定理，我们改写上面的公式：
+  
+    三维空间中：
     $$
-    \phi(t)=\phi_0
+    \phi(t)^\wedge y(t) = \phi(t) \times y(t)
+    $$
+    也就是说：
+    $$
+    \dot y(t) = \phi(t) \times y(t)
+    $$
+  
+  - 我们得到的 $\dot y(t) = \phi(t) \times y(t)$ 就是`刚体旋转的经典公式`
+  
+    > **在`经典刚体运动学`中**：
+    >
+    > 一个向量绕角速度 $\omega$ 旋转时，它的变化率是：
+    > $$
+    > \dot y = \omega \times y
+    > $$
+    > 其中：
+    >
+    > - $y$：某个向量在空间中的表达
+    > - $\omega$：角速度向量
+    > - $\dot y$：这个向量随时间变化的 瞬时速度
+  
+    对比：
+    $$
+    \dot y(t) = \phi(t) \times y(t)
+    $$
+    立刻得到：
+    $$
+    \phi(t) = \omega(t)
+    $$
+    也就是说这个`三维向量`$\phi$ 就是`角速度`
+  
+  
+
+- 那么如果在 $t=0$ 附近看旋转。我们假设 **初始状态没有旋转**，即 $R(t_0)=I$
+
+  - 按照`导数定义`，可以把 $R(t)$ 在 $t=0$ 附近进行**一阶泰勒展开**：
+    
+    > `泰勒展开`：
+    >
+    > 对普通函数 $f(x)$ 来说：**（在矩阵 / 李群里也是一样）**
+    > $$
+    > f(x) \approx f(x_0) + f'(x_0)(x-x_0)
+    > $$
+    > 成立的前提是：
+    >
+    > 1. $f$ 在 $x_0$ 附近可导
+    > 2. $x$ 足够接近 $x_0$
+    >
+    > 切线 = 泰勒展开的一阶项
+    
+    $$
+    R(t)\approx R(t_0)+\dot R(t_0)(t-t_0)
+    $$
+    代入：
+    $$
+    \begin{align}
+    \dot R(t_0)
+    &= \phi(t_0)^\wedge R(t_0) \\
+    &= \phi(t_0)^\wedge I \\
+    &= \phi(t_0)^\wedge
+    \end{align}
+    $$
+    
+    $$
+    t-t_0 = t-0 = t
+    $$
+    
+    得到：
+    $$
+    R(t)\approx I+\phi(t_0)^\wedge t
+    $$
+    **这个式子表示**：从`单位矩阵`出发，沿着 $\phi^\wedge$ 的方向移动。
+    
+    所以 $\phi^\wedge$ 表示旋转在 $I$ 点的`切向方向`，$\phi$ 是 **切空间元素**
+    $$
+    ϕ∈Tangent Space(切空间)
     $$
 
-  - 于是微分方程变成：
-    $$
-    \dot R(t)=\phi_0^\wedge R(t)
-    $$
 
-  - 有初始值 $R(0)=I$，解之，得：
-    $$
-    \boldsymbol{R}(t)=\exp\left(\boldsymbol{\phi}_0^\wedge t\right)
-    $$
+  - 什么是`切空间`？
+
+    <img src="./assets/llustration-on-a-sphere-of-the-geodesics-and-the-tangent-planes.png" alt="Illustration on a sphere of the geodesics and the tangent planes | Download  Scientific Diagram" style="zoom: 50%;" />
+
+    可以想象：
+
+    - 所有`旋转`组成一个**弯曲空间**（流形）
+    - 单位矩阵是一个点
+    - 角速度 $\phi$ 是该点的切向方向
+
+    我们可以做一个假设：
+
+    - 假设在一段很小的时间内机器人做`匀角速度运动`，也就是说**角速度保持常数**：
+      $$
+      \phi(t)=\phi_0
+      $$
+
+    - 于是微分方程变成：
+      $$
+      \dot R(t)=\phi_0^\wedge R(t)
+      $$
+
+    - 有初始值 $R(0)=I$，解之，得：
+      $$
+      \boldsymbol{R}(t)=\exp\left(\boldsymbol{\phi}_0^\wedge t\right)
+      $$
+
 
 - 读者可以验证上式对微分方程和初始值均成立。这说明在 $t = 0$ 附近，旋转矩阵可以由 $\exp(\phi_0 t)$ 计算出来。我们看到，旋转矩阵 $\boldsymbol{R}$ 与另一个反对称矩阵 $\phi_0 t$ 通过指数关系发生了联系。但是矩阵的指数是什么呢？这里我们有两个问题需要澄清：
 
   1. 给定某时刻的 $\boldsymbol{R}$，我们就能求得一个 $\phi$，它描述了 $\boldsymbol{R}$ 在局部的导数关系。与 $\boldsymbol{R}$ 对应的 $\phi$ 有什么含义呢？我们说，$\phi$ 正是对应到 $\mathrm{SO}(3)$ 上的李代数 $\mathfrak{so}(3)$；
 
-  2. 其次，给定某个向量 $\phi$ 时，矩阵指数 $\exp(\phi^\wedge)$ 如何计算？反之，给定 $\boldsymbol{R}$ 时，能否有相反的运算来计算 $\phi$？事实上，这正是李群与李代数间的指数/对数映射。
+  2. 其次，给定某个向量 $\phi$ 时，矩阵指数 $\exp(\phi^\wedge)$ 如何计算？反之，给定 $\boldsymbol{R}$ 时，能否有相反的运算来计算 $\phi$？事实上，这正是李群与李代数间的`指数/对数映射`。
 
 
   下面我们来解决这两个问题。
@@ -1637,10 +1738,10 @@ $$
 
     - 李代数要求 $\quad[aX + bY, Z] = a[X, Z] + b[Y, Z]$
 
-      代入得
-      $$
-      \begin{aligned} (aX + bY) \times Z &=  \begin{pmatrix} (ax_2 + by_2)z_3 - (ax_3 + by_3)z_2 \\[6pt] (ax_3 + by_3)z_1 - (ax_1 + by_1)z_3 \\[6pt] (ax_1 + by_1)z_2 - (ax_2 + by_2)z_1 \end{pmatrix} \\[15pt] &= \begin{pmatrix} a(x_2z_3 - x_3z_2) + b(y_2z_3 - y_3z_2) \\[6pt] a(x_3z_1 - x_1z_3) + b(y_3z_1 - y_1z_3) \\[6pt] a(x_1z_2 - x_2z_1) + b(y_1z_2 - y_2z_1) \end{pmatrix} \\[15pt] &= a \begin{pmatrix} x_2z_3 - x_3z_2 \\ x_3z_1 - x_1z_3 \\ x_1z_2 - x_2z_1 \end{pmatrix} + b \begin{pmatrix} y_2z_3 - y_3z_2 \\ y_3z_1 - y_1z_3 \\ y_1z_2 - y_2z_1 \end{pmatrix} \\[15pt] &= a(X \times Z) + b(Y \times Z) \end{aligned}
-      $$
+      - 代入得
+        $$
+        \begin{aligned} (aX + bY) \times Z &=  \begin{pmatrix} (ax_2 + by_2)z_3 - (ax_3 + by_3)z_2 \\[6pt] (ax_3 + by_3)z_1 - (ax_1 + by_1)z_3 \\[6pt] (ax_1 + by_1)z_2 - (ax_2 + by_2)z_1 \end{pmatrix} \\[15pt] &= \begin{pmatrix} a(x_2z_3 - x_3z_2) + b(y_2z_3 - y_3z_2) \\[6pt] a(x_3z_1 - x_1z_3) + b(y_3z_1 - y_1z_3) \\[6pt] a(x_1z_2 - x_2z_1) + b(y_1z_2 - y_2z_1) \end{pmatrix} \\[15pt] &= a \begin{pmatrix} x_2z_3 - x_3z_2 \\ x_3z_1 - x_1z_3 \\ x_1z_2 - x_2z_1 \end{pmatrix} + b \begin{pmatrix} y_2z_3 - y_3z_2 \\ y_3z_1 - y_1z_3 \\ y_1z_2 - y_2z_1 \end{pmatrix} \\[15pt] &= a(X \times Z) + b(Y \times Z) \end{aligned}
+        $$
 
       - 证明得：
         $$
@@ -1763,4 +1864,128 @@ $$
     $$
     \exp(\theta\boldsymbol{a}^\wedge)=\cos\theta\boldsymbol{I}+(1-\cos\theta)\boldsymbol{a}\boldsymbol{a}^\mathrm{T}+\sin\theta\boldsymbol{a}^\wedge.
     $$
+    我们知道：
+    
+    - 李代数：旋转向量 $\theta a$
+    - 李群：旋转矩阵 $R$
+    
+    这表明：
+    
+    - $\mathfrak{so}(3)$ 实际上就是由所谓的 **旋转向量$\theta a$** 组成的空问，而指数映射即**罗德里格斯公式**。
+    
+    - 通过`指数映射`，我们把 $\mathfrak{so}(3)$ 中任意一个**向量**对应到了一个位于 $\mathrm{SO}(3)$ 中的**旋转矩阵**。
+    
+    - 反之，如果定义`对数映射`，也能把 $\mathrm{SO}(3)$ 中的元素对应到 $\mathfrak{so}(3)$ 中：
+      $$
+      \phi = \ln(R)^{\vee} = \left(\sum_{n=0}^{\infty} \frac{(-1)^n}{n+1}(R - I)^{n+1}\right)^{\vee}.
+      $$
 
+- `指数映射`的**性质**如何？
+
+  - 指数映射只是一个`满射`，并不是`单射`，也就是说：
+
+    - 每个 $\mathrm{SO}(3)$ 中的元素，都可以找到一个 $\mathfrak{so}(3)$ 元素与之对应
+    - 但是可能存在多个 $\mathfrak{so}(3)$ 中的元素，对应到同一个 $\mathrm{SO}(3)$。
+
+    这是因为至少对于旋转角 $\theta$，我们知道多转 $360^\circ$ 和没有转是一样的——它具有`周期性`。
+
+    但是，如果我们把旋转角度固定在 $\pm \pi$ 之间，那么李群和李代数元素是一一对应的。
+
+
+
+### $SE(3)$上的指数映射
+
+下面介绍 $\mathfrak{se}(3)$ 上的指数映射。为了节省篇幅，我们不再像 $\mathfrak{so}(3)$ 那样详细推导指数映射。
+
+因为李代数$\mathfrak{se}(3)$的元素为：
+$$
+\xi=
+\begin{bmatrix}
+\rho\\
+\phi
+\end{bmatrix}
+$$
+其对应的矩阵形式是：
+
+- $\phi^\wedge \in \mathfrak{so}(3)$（角速度）
+
+- $\rho$ 是平移部分
+
+$$
+\xi^\wedge=
+\begin{bmatrix}
+\phi^\wedge & \rho\\
+0^T & 0
+\end{bmatrix}
+$$
+
+所以 $\mathfrak{se}(3)$ 上的指数映射形式如下：
+$$
+\exp(\xi^\wedge) = \begin{bmatrix} \sum_{n=0}^{\infty} \frac{1}{n!} (\phi^\wedge)^n & \sum_{n=0}^{\infty} \frac{1}{(n+1)!} (\phi^\wedge)^n \rho \\ \mathbf{0}^T & 1 \end{bmatrix}
+\\
+\triangleq \begin{bmatrix} R & J\rho \\ \mathbf{0}^T & 1 \end{bmatrix} = T.
+$$
+
+- 推导$J$：
+
+  令$ϕ = θa$，其中$a$为单位向量。对exp进行泰勒展开：
+  $$
+  \begin{aligned}\sum_{n=0}^{\infty}\frac{1}{(n+1)!}(\phi^{\wedge})^{n}&=\boldsymbol{I}+\frac{1}{2!}\theta\boldsymbol{a}^{\wedge}+\frac{1}{3!}\theta^{2}{(\boldsymbol{a}^{\wedge})}^{2}+\frac{1}{4!}\theta^{3}{(\boldsymbol{a}^{\wedge})}^{3}+\frac{1}{5!}\theta^{4}{(\boldsymbol{a}^{\wedge})}^{4}\cdots\\&=\frac{1}{\theta}\left(\frac{1}{2!}\theta^{2}-\frac{1}{4!}\theta^{4}+\cdots\right)(\boldsymbol{a}^{\wedge})+\frac{1}{\theta}\left(\frac{1}{3!}\theta^{3}-\frac{1}{5}\theta^{5}+\cdots\right)\left(\boldsymbol{a}^{\wedge}\right)^{2}+\boldsymbol{I}\\&=\frac{1}{\theta}\left(1-\cos\theta\right)\left(\boldsymbol{a}^{\wedge}\right)+\frac{\theta-\sin\theta}{\theta}\left(\boldsymbol{a}\boldsymbol{a}^{T}-\boldsymbol{I}\right)+\boldsymbol{I}\\&=\frac{\sin\theta}{\theta}\boldsymbol{I}+\left(1-\frac{\sin\theta}{\theta}\right)\boldsymbol{a}\boldsymbol{a}^T+\frac{1-\cos\theta}{\theta}\boldsymbol{a}^\wedge\triangleq J.\end{aligned}
+  $$
+  从结果上看，$\xi$的指数映射左上角的 $R$ 是我们熟知的 SO(3)中的元素，与 se(3)当中的旋转部分$\phi$对应。而右上角的$J$由上面的推导给出：
+
+$$
+\boldsymbol{J}=\frac{\sin\theta}\theta\boldsymbol{I}+\left(1-\frac{\sin\theta}\theta\right)\boldsymbol{a}\boldsymbol{a}^\mathrm{T}+\frac{1-\cos\theta}\theta\boldsymbol{a}^\mathrm{\wedge}.
+$$
+
+![image-20260302105400535](./assets/image-20260302105400535.png)
+
+
+
+## 李代数求导与扰动模型
+
+### **BCH** 公式与近似形式
+
+> 使用`李代数`的一大动机是进行`优化`，而在优化过程中`导数`是非常必要的信息(我们会在第 6 讲详细介绍 )。
+
+- 下面来考虑一个问题：
+
+  虽然我们已经清楚了 SO(3)和 SE(3)上的李群与李代数关系，
+
+  但是，当在 SO(3) 中完成两个矩阵乘法时，李代数中 so(3)上发生了什么改变呢？
+
+  反过来说，当 so(3) 上做两个李代数的加法时，SO(3)上是否对应着两个矩阵的乘积？如果成立，相当于：
+  $$
+  \exp\left(\phi_1^\wedge\right)\exp\left(\phi_2^\wedge\right)=\exp\left(\left(\phi_1+\phi_2\right)^\wedge\right)?
+  $$
+  很显然，当$\phi_1,\phi_2$​为标量时，该式子成立。但此处我们计算的是`矩阵`的**指数函数**，而非标量的指数。换言之，我们在研究下式是否成立：
+  $$
+  \ln\left(\exp\left(A\right)\exp\left(B\right)\right)=A+B ?
+  $$
+  ❌并不成立！两个李代数指数映射乘积的完整形式，由 `Baker-Campbell Hausdorff 公式（BCH 公式）`给出。
+
+- `BCH公式`
+
+  由于其完整形式较复杂，我们只给出其展开式的前几项：
+  $$
+  \ln\left(\exp\left(A\right)\exp\left(B\right)\right)=A+B+\frac{1}{2}\left[A,B\right]+\frac{1}{12}\left[A,\left[A,B\right]\right]-\frac{1}{12}\left[B,\left[A,B\right]\right]+\cdots
+  $$
+  其中`[]`代表李括号。
+
+  BCH公式告诉我们，当处理两个矩阵指数之积时，它们会产生一些由李括号组成的余项。
+
+  特别地，考虑 SO(3)上的李代数$\ln\left(\exp\left(\phi_1^{\wedge}\right)\exp\left(\phi_2^{\wedge}\right)\right)^{\vee}$,当$\phi_1$或$\phi_2$为小量时，小量二次以上的项都可以被忽略掉。此时，BCH 拥有线性近似表达：
+  $$
+  \ln\left(\exp\left(\phi_1^\wedge\right)\exp\left(\phi_2^\wedge\right)\right)^\vee\approx\left\{\begin{array}{ll}J_l(\phi_2)^{-1}\phi_1+\phi_2&\text{当}\phi_1\text{为小量，}\\J_r(\phi_1)^{-1}\phi_2+\phi_1&\text{当}\phi_2\text{为小量}.\end{array}\right.
+  $$
+  以第一个近似为例。该式告诉我们，当对一个旋转矩阵 $R_2$（李代数为 $\phi_2$）左乘一个微小旋转矩阵 $R_1$（李代数为 $\phi_1$）时，可以近似地看作，在原有的李代数 $\phi_2$ 上加上了一项 $J_l(\phi_2)^{-1}\phi_1$。同理，第二个近似描述了右乘一个微小位移的情况。于是，李代数在 BCH 近似下，分成了左乘近似和右乘近似两种，在使用时我们须注意使用的是左乘模型还是右乘模型。
+  本书以左乘为例。左乘 BCH 近似雅可比 $J_l$ 事实上就是式的内容：
+  $$
+  J_l = J = \frac{\sin\theta}{\theta}I + \left(1 - \frac{\sin\theta}{\theta}\right)aa^\mathrm{T} + \frac{1 - \cos\theta}{\theta}a^\wedge.
+  $$
+  它的逆为：
+  $$
+  - J_l^{-1} = \frac{\theta}{2}\cot\frac{\theta}{2}I + \left(1 - \frac{\theta}{2}\cot\frac{\theta}{2}\right)aa^\mathrm{T} - \frac{\theta}{2}a^\wedge.
+  $$
+
+- 
