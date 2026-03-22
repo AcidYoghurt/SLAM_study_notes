@@ -549,10 +549,6 @@ $$
      T^{-1} = \begin{bmatrix} R^T & -R^T t \\ 0 & 1 \end{bmatrix}
      $$
      
-   
-4. 
-
-
 
 
 
@@ -567,7 +563,23 @@ $$
   
 - **旋转向量**: 
 
-  - **概念**：任意旋转都可以用**一个旋转轴**和**一个旋转角** 来刻画。于是我们可以使用一个`向量`，其**方向表示旋转轴**而**长度表示旋转**角.这种向量称为`旋转向量`（或轴角,Axis-Angle）。
+  - **概念**：任意旋转都可以用**一个旋转轴**和**一个旋转角** 来刻画。于是我们可以使用一个`向量`：
+
+    - `方向`表示**旋转轴**
+    - `长度`表示旋**转角**
+
+    这种向量称为`旋转向量`（或轴角,Axis-Angle）。
+
+  - **几何意义**：
+
+    - `旋转向量的方向`表示**旋转轴的方向**。
+    - `旋转向量的模长`表示**绕旋转轴旋转的角度**。
+
+    > [!IMPORTANT]
+    >
+    > 当一个东西绕某个旋转轴旋转时，会造成`位移`。
+    >
+    > **`旋转`与`位移`的关系**很敏感，因为可以想象得到，当一个物品在离旋转轴很远的地方绕该旋转轴旋转，即使旋转角度很小，其位移还是非常大
 
   - **例如**：假设有一个**旋转轴为n**，**角度为θ**的旋转，其对应的`旋转向量`为θn
 
@@ -1027,11 +1039,11 @@ $$
 
 - 从`单位四元数`到`旋转向量`
 
-  已知四元数：
+  已知**四元数**：
   $$
   q = [q_0, q_1, q_2, q_3]
   $$
-  求旋转向量：
+  求**旋转向量**：
 
   1. 旋转角度：
 
@@ -1092,7 +1104,7 @@ $$
   >   - 旋转轴方向对最终结果影响不大
   >   - 所以直接取任意**单位向量**（如 `[1,0,0]`,`[0,1,0]`）即可
   >
-  >   然后旋转向量 = θ * n ≈ 很小的位移 → 近似无旋转
+  >   然后旋转向量 = θ * n ≈ 无旋转，也就是说物体基本不会位移
   >
   > - 旋转向量 = θ * n
 
@@ -1260,10 +1272,15 @@ $$
   - 我们不仅要表示相机或机器人的位姿（位置+旋转），
   - 还要**估计它们的具体数值**，因为这些位姿 **是未知的**。
 
-  换句话说，我们不知道相机在世界中的精确位置和朝向，只能通过观测（比如图像、特征点）来推测。
+  换句话说，我们不知道相机在世界中的精确位置和朝向，只能通过`观测`（比如图像、特征点）来推测。
 
-- `带约束的优化问题`：旋转矩阵自身是带有约束的（正交且行列式为 1）。它们作为优化变量时，会引入额外的约束，使优化变得困难。
-- `不带约束的优化问题`：通过`李群—李代数`间的转换关系，我们希望把位姿估计变成无约束的优化问题，简化求解方式。
+- 🤔在之前我们知道，旋转矩阵是带有约束的，也就是说用`旋转矩阵`来解决SLAM中的问题就会带上`约束`。这种情况显然不是我们想要的。我们想要的是`不带约束的优化问题`。而`李群-李代数`用来解决SLAM中的问题就可以转换为不带约束的优化问题
+
+  <div style="text-align: center; color: red;">（我们可以把旋转矩阵和李群-李代数都当成一种数学工具）</div>
+
+  - `带约束的优化问题`：旋转矩阵自身是带有约束的（正交且行列式为 1）。它们作为优化变量时，会引入额外的约束，使优化变得困难。
+  - `不带约束的优化问题`：通过`李群—李代数`间的转换关系，我们希望把位姿估计变成无约束的优化问题，简化求解方式。
+
 
 
 
@@ -1325,7 +1342,7 @@ $$
   $$
   (a b)c=a(b c)
   $$
-  🤔为什么结合律对于旋转矩阵可以成立？
+  **🤔为什么结合律对于旋转矩阵可以成立？**
 
   - 这里表示机器人先做旋转A，再做旋转B，再做旋转C
 
@@ -1339,11 +1356,10 @@ $$
   ae=ea=a
   $$
   - **含义**：在机器人里，单位元表示**什么都不做**
-
-    - SO(3)：单位矩阵 $I$
-
-    - SE(3)：不动的位姿
-
+  - SO(3)：单位矩阵 $I$
+    
+  - SE(3)：不动的位姿
+  
 - **逆元（Inverse）**
 
   - 对每个元素 $a$，必须存在：$a^{-1}$，满足$a a^{-1}=e$
@@ -1400,7 +1416,7 @@ $$
 
 ### 李代数的引出
 
-- 考虑任意旋转矩阵 $R$，我们知道它满足：
+- 考虑任意`旋转矩阵` $R$，我们知道它满足：（**正交矩阵的性质**，保证物体在旋转后本身的长宽等保持不变）
   $$
   RR^{\mathrm{T}} = I
   $$
@@ -1408,7 +1424,7 @@ $$
   $$
   R(t)R(t)^{\mathrm{T}} = I
   $$
-  在等式两边对时间求导，得到：
+  在等式两边**对时间求导**，得到：
   $$
   \begin{align}
   \dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}
@@ -1436,7 +1452,7 @@ $$
 
 
 
-- 于是，由于$\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}$是一个反对称矩阵，我们可以找到一个`三维向量`$\phi(t)\in\mathbb{R}^3$与之对应：
+- 于是，因为$\dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}$是一个`反对称矩阵`，所以我们可以找到一个`三维向量`$\phi(t)\in\mathbb{R}^3$与之对应：
   $$
   \dot{\boldsymbol{R}}(t)\boldsymbol{R}(t)^\mathrm{T}=\boldsymbol{\phi}(t)^\wedge
   $$
@@ -1527,10 +1543,10 @@ $$
 
         例如在rviz中world是惯性系，而我在小车的base_link来观察其他坐标系，base_link就是旋转坐标系
 
-      - **$x$：**是向量在**惯性坐标系**（静止系）中的“真实”坐标。它是固定的，不随时间变化。
+      - **$x$：**是向量在**惯性坐标系**（静止系）中的“真实”坐标。它在惯性坐标系是固定的，不随时间变化。
       - **$R(t)$：**是一个**旋转矩阵**。它描述了随着时间的推移，旋转坐标系相对于静止坐标系转了多少度。它通常满足 $R^T R = I$。
 
-      - **$y(t)$：**是同一个向量在**旋转坐标系**中观察到的坐标。因为坐标系在转，所以即使 $x$ 没动，$y(t)$ 也会随时间变化。
+      - **$y(t)$：**是同一个向量在**旋转坐标系**中观察到的坐标。因为坐标系在转，所以即使 $x$ 在**惯性坐标系**没动，$y(t)$ 也会随时间变化。
 
       现在对时间求导：
       $$
@@ -1538,7 +1554,7 @@ $$
       $$
       代入我们在上面推导出来的 $\dot{\boldsymbol{R}}(t)=\phi(t)^{\wedge}\boldsymbol{R}(t)$，得到：
       $$
-      \dot y(t) = \phi^\wedge R(t) x
+      \dot y(t) = \phi(t)^\wedge R(t) x
       $$
       但因为上面的式子 $R(t)x = y(t)$，代入得：
       $$
@@ -1551,10 +1567,11 @@ $$
     > **在三维欧氏空间 $\mathbb{R}^3$ 中**：
     >
     > 任意一个 $3\times3$ 的`反对称矩阵` $A$，都存在唯一一个`向量`$\omega \in \mathbb{R}^3$，使得：
-    >  $$
+    > $$
     > A x = \omega \times x
     > \quad \forall x \in \mathbb{R}^3
     > $$
+    > 其中$x$是**三维欧氏空间**中的**任意一个向量**
   
     根据定理，我们改写上面的公式：
   
@@ -1571,15 +1588,15 @@ $$
   
     > **在`经典刚体运动学`中**：
     >
-    > 一个向量绕角速度 $\omega$ 旋转时，它的变化率是：
+    > 一个`向量`（普通的位置向量）绕角速度 $\omega$ 旋转时，它的变化率是：
     > $$
     > \dot y = \omega \times y
     > $$
     > 其中：
     >
-    > - $y$：某个向量在空间中的表达
-    > - $\omega$：角速度向量
-    > - $\dot y$：这个向量随时间变化的 瞬时速度
+    > - $y$：某个向量在空间中的表达。这个向量在旋转坐标系中表示，并且它随着时间变化。
+    > - $\omega$：角速度向量，表示物体或坐标系的旋转速率及其方向。**角速度向量的方向**是旋转轴的方向，而其**大小**表示旋转的角速度（单位：弧度/秒）。
+    > - $\dot y$：是向量 $y$ 随时间的变化率，表示的是向量 $y$ 的**瞬时速度**（即向量的时间导数）。
   
     对比：
     $$
@@ -1592,27 +1609,31 @@ $$
     也就是说这个`三维向量`$\phi$ 就是`角速度`
   
   
-
+  
 - 那么如果在 $t=0$ 附近看旋转。我们假设 **初始状态没有旋转**，即 $R(t_0)=I$
 
+  **（注意：我们取一个非常小的旋转是为了保证`线性近似`）**
+  
   - 按照`导数定义`，可以把 $R(t)$ 在 $t=0$ 附近进行**一阶泰勒展开**：
     
     > `泰勒展开`：
     >
     > 对普通函数 $f(x)$ 来说：**（在矩阵 / 李群里也是一样）**
     > $$
-    > f(x) \approx f(x_0) + f'(x_0)(x-x_0)
+    > f(x)=f(x_0)+\frac{f^{\prime}(x_0)}{1!}(x-x_0)+\frac{f^{\prime\prime}(x_0)}{2!}(x-x_0)^2+\cdots+\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+R_n
     > $$
     > 成立的前提是：
     >
     > 1. $f$ 在 $x_0$ 附近可导
     > 2. $x$ 足够接近 $x_0$
     >
-    > 切线 = 泰勒展开的一阶项
+    > $f(x)$在$x_0$处的`切线` = 泰勒展开的一阶项，即$f(x_0)$
     
     $$
     R(t)\approx R(t_0)+\dot R(t_0)(t-t_0)
     $$
+    （旋转矩阵在某个点 $t_0$ 附近可导的含义是，**旋转矩阵的元素对于时间或某个参数（比如角度）在该点具有明确的导数**，并且这一导数在该点是连续的。简单来说，它描述了**旋转矩阵随参数（如角度或时间）变化的变化率**。）
+    
     代入：
     $$
     \begin{align}
@@ -1641,33 +1662,39 @@ $$
 
   - 什么是`切空间`？
 
+    我们通常在几何学中将`切空间`理解为在**某一点上**与**曲面**接触的**平面**上的**所有向量**。
+
+    也就是说`切空间`是**流形**中某一点处的“切平面”，它包含了所有可以在该点“切”到流形的方向向量。
+
+    `切空间`如下图所示👇
+    
     <img src="./assets/llustration-on-a-sphere-of-the-geodesics-and-the-tangent-planes.png" alt="Illustration on a sphere of the geodesics and the tangent planes | Download  Scientific Diagram" style="zoom: 50%;" />
 
     可以想象：
-
-    - 所有`旋转`组成一个**弯曲空间**（流形）
-    - 单位矩阵是一个点
-    - 角速度 $\phi$ 是该点的切向方向
-
+    
+    - 所有`旋转`组成一个旋转群（$SO(n)$），它是一个`流形`，它的切空间包含了在该点的旋转方向和速度，通常用李代数来描述。
+    - `单位矩阵`是切空间中的一个点（就是上图中的一个点）
+    - `角速度` $\phi$ 是该点（单位矩阵点）切空间中的一个方向向量。这个向量描述了旋转的速度，它是切空间中的一个元素，并与旋转群的李代数中的元素一一对应。
+    
     我们可以做一个假设：
-
+    
     - 假设在一段很小的时间内机器人做`匀角速度运动`，也就是说**角速度保持常数**：
       $$
       \phi(t)=\phi_0
       $$
-
+    
     - 于是微分方程变成：
       $$
       \dot R(t)=\phi_0^\wedge R(t)
       $$
-
+    
     - 有初始值 $R(0)=I$，解之，得：
       $$
       \boldsymbol{R}(t)=\exp\left(\boldsymbol{\phi}_0^\wedge t\right)
       $$
 
 
-- 读者可以验证上式对微分方程和初始值均成立。这说明在 $t = 0$ 附近，旋转矩阵可以由 $\exp(\phi_0 t)$ 计算出来。我们看到，旋转矩阵 $\boldsymbol{R}$ 与另一个反对称矩阵 $\phi_0 t$ 通过指数关系发生了联系。但是矩阵的指数是什么呢？这里我们有两个问题需要澄清：
+- 读者可以验证上式对微分方程和初始值均成立。**这说明在 $t = 0$ 附近，旋转矩阵可以由 $\exp(\phi_0 t)$ 计算出来**。我们看到，旋转矩阵 $\boldsymbol{R}$ 与另一个反对称矩阵 $\phi_0 t$ 通过指数关系发生了联系。但是矩阵的指数是什么呢？这里我们有两个问题需要澄清：
 
   1. 给定某时刻的 $\boldsymbol{R}$，我们就能求得一个 $\phi$，它描述了 $\boldsymbol{R}$ 在局部的导数关系。与 $\boldsymbol{R}$ 对应的 $\phi$ 有什么含义呢？我们说，$\phi$ 正是对应到 $\mathrm{SO}(3)$ 上的李代数 $\mathfrak{so}(3)$；
 
@@ -1938,7 +1965,7 @@ $$
 \boldsymbol{J}=\frac{\sin\theta}\theta\boldsymbol{I}+\left(1-\frac{\sin\theta}\theta\right)\boldsymbol{a}\boldsymbol{a}^\mathrm{T}+\frac{1-\cos\theta}\theta\boldsymbol{a}^\mathrm{\wedge}.
 $$
 
-![image-20260302105400535](./assets/image-20260302105400535.png)
+![](./assets/image-20260302105400535.png)
 
 
 
@@ -1952,7 +1979,7 @@ $$
 
   虽然我们已经清楚了 SO(3)和 SE(3)上的李群与李代数关系，
 
-  但是，当在 SO(3) 中完成两个矩阵乘法时，李代数中 so(3)上发生了什么改变呢？
+  但是，当在 SO(3) 中完成`两个矩阵乘法`时，李代数中 so(3)上发生了什么改变呢？
 
   反过来说，当 so(3) 上做两个李代数的加法时，SO(3)上是否对应着两个矩阵的乘积？如果成立，相当于：
   $$
@@ -1962,7 +1989,9 @@ $$
   $$
   \ln\left(\exp\left(A\right)\exp\left(B\right)\right)=A+B ?
   $$
-  ❌并不成立！两个李代数指数映射乘积的完整形式，由 `Baker-Campbell Hausdorff 公式（BCH 公式）`给出。
+  ❌并不成立！这是因为`标量`是`对易`的（即$ab=ba$），但是`矩阵`是`不对易`的（即$AB \ne BA$）
+
+  两个李代数指数映射乘积的完整形式，由 `Baker-Campbell Hausdorff 公式（BCH 公式）`给出。
 
 - `BCH公式`
 
@@ -1974,11 +2003,33 @@ $$
 
   BCH公式告诉我们，当处理两个矩阵指数之积时，它们会产生一些由李括号组成的余项。
 
-  特别地，考虑 SO(3)上的李代数$\ln\left(\exp\left(\phi_1^{\wedge}\right)\exp\left(\phi_2^{\wedge}\right)\right)^{\vee}$,当$\phi_1$或$\phi_2$为小量时，小量二次以上的项都可以被忽略掉。此时，BCH 拥有线性近似表达：
+  特别地，考虑 SO(3)上的李代数$\ln\left(\exp\left(\phi_1^{\wedge}\right)\exp\left(\phi_2^{\wedge}\right)\right)^{\vee}$，当$\phi_1$或$\phi_2$为`小量（即非常小的量，它接近于零，但不是完全为零）`时，小量二次以上的项都可以被忽略掉。此时，BCH 拥有`线性近似`表达：
   $$
   \ln\left(\exp\left(\phi_1^\wedge\right)\exp\left(\phi_2^\wedge\right)\right)^\vee\approx\left\{\begin{array}{ll}J_l(\phi_2)^{-1}\phi_1+\phi_2&\text{当}\phi_1\text{为小量，}\\J_r(\phi_1)^{-1}\phi_2+\phi_1&\text{当}\phi_2\text{为小量}.\end{array}\right.
   $$
-  以第一个近似为例。该式告诉我们，当对一个旋转矩阵 $R_2$（李代数为 $\phi_2$）左乘一个微小旋转矩阵 $R_1$（李代数为 $\phi_1$）时，可以近似地看作，在原有的李代数 $\phi_2$ 上加上了一项 $J_l(\phi_2)^{-1}\phi_1$。同理，第二个近似描述了右乘一个微小位移的情况。于是，李代数在 BCH 近似下，分成了左乘近似和右乘近似两种，在使用时我们须注意使用的是左乘模型还是右乘模型。
+  - 解释：
+
+    - 当 **$\phi_1$ 很小** 时，本质是在做：在 $\exp(\phi_2^\wedge)$ 附近，加一个“微小扰动”
+  
+      当 **$\phi_2$ 很小** 时，本质是在做：在 $\exp(\phi_1^\wedge)$ 附近，加一个“微小扰动”
+  
+    - $J_l(\phi_2)^{-1}$ 和 $J_r(\phi_1)^{-1}$ 分别是根据 $\phi_2$ 和 $\phi_1$ 定义的旋转矩阵。它们是 **扰动矩阵**，描述了小量旋转对整体旋转的影响。在这种近似中，旋转的影响是 **线性的**，而不是完全的非线性。
+  
+    - 当 $\phi_1$ 或 $\phi_2$ 足够小的时候（例如角度很小的旋转），旋转群 $SO(3)$ 的行为接近`线性`。因为旋转矩阵 $\exp(\phi^\wedge)$ 在小量 $\phi$ 下可以用 **一阶泰勒展开** 来近似。因此，我们可以忽略掉二次以上的高阶项，得到上面的线性近似。
+  
+  - 第一个近似为例：
+  
+    当 $\phi_1$ 很小时（接近零），则旋转的影响主要由 $\phi_2$ 来主导。
+  
+    该式告诉我们，当对一个旋转矩阵 $R_2$（李代数为 $\phi_2$）左乘一个微小旋转矩阵 $R_1$（李代数为 $\phi_1$）时，可以近似地看作，在原有的李代数 $\phi_2$ 上加上了一项 $J_l(\phi_2)^{-1}\phi_1$。
+  
+  - 第二个近似：
+  
+    当 $\phi_2$ 很小时（接近零），旋转的影响主要由 $\phi_1$ 来主导。
+  
+    描述了右乘一个微小位移的情况。
+  
+  于是，李代数在 BCH 近似下，分成了左乘近似和右乘近似两种，在使用时我们须注意使用的`左乘模型`还是`右乘模型`。
   本书以左乘为例。左乘 BCH 近似雅可比 $J_l$ 事实上就是式的内容：
   $$
   J_l = J = \frac{\sin\theta}{\theta}I + \left(1 - \frac{\sin\theta}{\theta}\right)aa^\mathrm{T} + \frac{1 - \cos\theta}{\theta}a^\wedge.
@@ -1988,4 +2039,1840 @@ $$
   - J_l^{-1} = \frac{\theta}{2}\cot\frac{\theta}{2}I + \left(1 - \frac{\theta}{2}\cot\frac{\theta}{2}\right)aa^\mathrm{T} - \frac{\theta}{2}a^\wedge.
   $$
 
-- 
+
+
+### SO(3) 李代数上的求导
+
+🤔问题：我们讨论一个**带有李代数的函数**，如何关于该**李代数求导**的问题。
+
+- 在 SLAM 中，我们要估计一个相机的位置和姿态，该位姿是由 SO(3)上的`旋转矩阵`或 SE(3) 上的`变换矩阵`描述的。不妨设某个时刻机器人的位姿为$T$。它观察到了一个世界坐标位于$p$ 的点，产生了一个观测数据$z$。那么，由坐标变换关系知：
+  $$
+  z=Tp+w
+  $$
+  其中：
+
+  - 变换矩阵$T$：相机的 **位姿**，表示相机在世界坐标系中的旋转和位移。也就是说，**T** 是一个 **SE(3)** 变换矩阵，描述了相机从世界坐标系到相机坐标系的变换。
+  - 世界坐标$p$：这是一个点的 **世界坐标（三维向量）**，它表示了**某个物体（这是一个被相机观测到的物体）**在**世界坐标系**中的位置。
+  - 观测数据$z$：相机观测到的 该点在相机坐标系下的位置。
+  - 观测噪声$w$：在测量过程中引入的误差。它可以是测量误差、传感器噪声等。
+
+  对于这个公式，我们实际要求的是`相机在世界坐标系下的位姿`$T$，也就是说我们要根据观测点来计算相机在世界观测系下最接近真实位姿的预测点
+
+- 其中 **w** 为随机噪声。由于它的存在，**z** 往往不可能精确地满足 **z** = **T p** 的关系。所以，我们通常会计算理想的观测与实际数据的误差：
+  $$
+  e=z-Tp
+  $$
+
+- 假设一共有$N$个这样的路标点和观测，于是就有$N$个与上面一样的式子$e=z-Tp$。那么，对小萝卜的位姿估计，相当于是寻找一个最优的$T$，使得`整体误差`$e$最小化：
+  $$
+  \min_{\boldsymbol{T}}J(\boldsymbol{T})=\sum_{i=1}^N\left\|\boldsymbol{z}_i-\boldsymbol{T}\boldsymbol{p}_i\right\|_2^2.
+  $$
+  其中：
+
+  - $\boldsymbol{T}$：这是你`要估计的相机位姿`，它通常表示为一个变换矩阵，属于 $SE(3)$。这个矩阵描述了相机在世界坐标系中的位置（平移）和方向（旋转）。
+
+  - $J(\boldsymbol{T})$：这是`代价函数`，目标是**最小化**它。它通常代表当前估计的位姿 $\boldsymbol{T}$ 与实际观测值之间的差异。我们希望通过优化得到一个最小的 $J(\boldsymbol{T})$，从而找到最优的相机位姿。
+
+  - $\left\| z_i - T p_i \right\|_2^2$：这是`每个观测误差的平方欧氏范数`。具体地：
+
+    - $z_i$ 是第 $i$ 次观测的结果，通常是**传感器观测到的点在相机坐标系中的位置**，可能有测量误差。
+
+    - $p_i$ 是第 $i$ 次观测的**世界坐标系中的点位置**。
+
+    - $T p_i$ 是将世界坐标系中的点 $p_i$ 通过当前估计的位姿 $T$ 变换到相机坐标系中的结果。
+
+    - $\left\| z_i - T p_i \right\|_2^2$ 计算了这个变换后的点与实际观测数据之间的误差的平方。
+
+  - 求和符号 $\sum_{i=1}^N$：表示对所有观测点 $i$ 从 1 到 $N$ 的误差进行求和，即对每个观测值的误差进行累加。最终的代价函数是所有这些误差的总和。
+
+🤔求解此问题，需要计算目标函数 *J* 关于变换矩阵 **T** 的导数。我们把具体的算法留到后面再讲。
+
+这里的重点是，<span style="color:red">我们经常会构建与位姿有关的函数，然后讨论该函数关于位姿的<b>导数</b>，以调整当前的估计值</span>。然而，SO(3)*,* SE(3) 上并没有良好定义的加法，它们只是群。如果我们把 **T** 当成一个`普通矩阵`来处理优化，那就必须对它加以约束。而从`李代数`角度来说，由于**李代数由向量组成**，具有良好的加法运算。因此，使用李代数解决求导问题的思路分为两种：
+
+1. 用`李代数`表示姿态，然后根据李代数加法来对李代数求导。
+2. 对`李群`左乘或右乘微小扰动，然后对该扰动求导，称为左扰动和右扰动模型。
+
+第一种方式对应到李代数的`求导模型`，而第二种则对应到`扰动模型`。下面来讨论这两种思路的异同。
+
+
+
+#### 思路1：李代数求导
+
+> `导数的定义`
+> $$
+> f'(x_0) = \lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x} = \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x}
+> $$
+
+假设我们对一个空间点 **p** 进行了旋转，得到了 **Rp**。现在，要计**算`旋转之后点的坐标`相对于`旋转`的导数**，我们非正式地记为：
+$$
+\frac{\partial\left(\boldsymbol{R}\boldsymbol{p}\right)}{\partial\boldsymbol{R}}.
+$$
+**由于 SO(3) 没有加法**，所以该导数无法按照导数的定义进行计算。设 **R** 对应的李代数为 **ϕ**，我们转而计算
+$$
+\frac{\partial\left(\exp\left(\phi^{\wedge}\right)\boldsymbol{p}\right)}{\partial\phi}.
+$$
+按照导数的定义，有：
+$$
+\begin{aligned}\frac{\partial\left(\exp\left(\boldsymbol{\phi}^{\wedge}\right)\boldsymbol{p}\right)}{\partial\phi}
+&=\lim_{\delta\phi\to0}\frac{\exp\left(\left(\phi+\delta\phi\right)^{\wedge}\right)p-\exp\left(\phi^{\wedge}\right)p}{\delta\phi}\\
+&BCH线性近似：\exp\left(\left(\phi+\Delta\phi\right)^{\wedge}\right)=\exp\left(\left(J_{l}\Delta\phi\right)^{\wedge}\right)\exp\left(\phi^{\wedge}\right)=\exp\left(\phi^{\wedge}\right)\exp\left(\left(J_{r}\Delta\phi\right)^{\wedge}\right). \\
+&=\lim_{\delta\phi\to0}\frac{\exp\left(\left(\boldsymbol{J}_l\delta\phi\right)^{\wedge}\right)\exp\left(\phi^{\wedge}\right)p-\exp\left(\phi^{\wedge}\right)p}{\delta\phi}\\
+&泰勒展开舍去高阶项后的近似（但由于取了极限，可以写等号）。注意这里泰勒展开是e^x的公式\\
+&=\lim_{\delta\phi\to0}\frac{\left(\boldsymbol{I}+\left(\boldsymbol{J}_l\delta\boldsymbol{\phi}\right)^{\wedge}\right)\exp\left(\boldsymbol{\phi}^{\wedge}\right)\boldsymbol{p}-\exp\left(\boldsymbol{\phi}^{\wedge}\right)\boldsymbol{p}}{\delta\phi}\\
+&将反对称符号看作叉积，交换之后变号。即A\times B=-B\times A\\
+&=\lim_{\delta\phi\to0}\frac{\left(\boldsymbol{J}_l\delta\phi\right)^{\wedge}\exp\left(\phi^{\wedge}\right)\boldsymbol{p}}{\delta\phi}\\
+&=\lim_{\delta\boldsymbol{\phi}\to\mathbf{0}}\frac{-(\exp\left(\boldsymbol{\phi}^{\wedge}\right)\boldsymbol{p})^{\wedge}\boldsymbol{J}_{l}\delta\phi}{\delta\boldsymbol{\phi}} \\
+&分子分母同时约掉\delta\boldsymbol{\phi}，然后李代数\exp\left(\boldsymbol{\phi}^{\wedge}\right)变回李群R \\
+&=-(\boldsymbol{R}\boldsymbol{p})^{\wedge}\boldsymbol{J}_{l}.\end{aligned}
+$$
+
+
+#### 思路2：扰动模型（更为简单实用）
+
+> 扰动模型分为`左扰动模型（左乘）`和`右扰动模型（右乘）`。这里展示的是`左扰动模型`
+
+另一种求导方式是对$R$进行一次扰动$\Delta R$，看结果相对于扰动的变化率。这个扰动可以乘在左边也可以乘在右边，最后结果会有一点儿微小的差异，我们以左扰动为例。
+
+所谓`左扰动模型`，就是**在群元素 $R = \exp(\phi^\wedge)$ 上施加一个微小扰动（无穷小旋转）**，定义步骤是：
+
+- 左扰动定义为：
+  $$
+  R(\varphi) = \exp(\varphi^\wedge)\, R
+  $$
+  这里：
+
+  - $\varphi \in \mathbb{R}^3$ 是**无穷小扰动**
+  - 是“左乘”，所以叫**左扰动**
+
+- 然后我们要求的$\frac{\partial\left(\boldsymbol{Rp}\right)}{\partial\varphi}$​就变为
+  $$
+  \frac{\partial (Rp)}{\partial \phi}
+  =
+  \lim_{\varphi \to 0}
+  \frac{ \exp(\varphi^\wedge) R p - R p}{\varphi}
+  $$
+
+
+
+设左扰动$\Delta R$对应的李代数为$\varphi$。然后，对$\varphi$求导，即：
+$$
+\begin{aligned}\frac{\partial\left(\boldsymbol{Rp}\right)}{\partial\varphi}
+&=\lim_{\varphi\to0}\frac{\exp\left(\varphi^{\wedge}\right)\exp\left(\phi^{\wedge}\right)p-\exp\left(\phi^{\wedge}\right)p}{\varphi}\\
+&泰勒展开舍去高阶项后的近似（但由于取了极限，可以写等号）。\\
+&=\lim_{\varphi\to0}\frac{\left(\boldsymbol{I}+\boldsymbol{\varphi}^{\wedge}\right)\exp\left(\boldsymbol{\phi}^{\wedge}\right)\boldsymbol{p}-\exp\left(\boldsymbol{\phi}^{\wedge}\right)\boldsymbol{p}}{\varphi}\\
+&消除相等的项，然后李代数\exp\left(\boldsymbol{\phi}^{\wedge}\right)变回李群R \\
+&=\lim_{\varphi\to0}\frac{\varphi^\wedge Rp}{\varphi}\\
+&将反对称符号看作叉积，交换之后变号。即A\times B=-B\times A\\
+&=\lim_{\varphi\to0}\frac{-(Rp)^\wedge\varphi}{\varphi}
+=-(Rp)^\wedge.\end{aligned}
+$$
+
+<div style="text-align: center; color: red; font-weight: bold;">（与导数模型相比，扰动模型得到的结果省去了一个雅可比的计算，更为简单实用）</div>
+
+
+
+### SE(3) 上的李代数求导
+
+> 因为我们知道`扰动模型`更好，所以这里直接用扰动模型来计算
+
+假设某空间点$p$ 经过一次变换$T$（对应李代数为$\xi$），得到$Tp$。现在，给$T$左乘一个扰动$\Delta T=\exp\left(\delta\xi^{\wedge}\right)$，我们设扰动项的李代数为$\delta\boldsymbol{\xi}=[\delta\boldsymbol{\rho},\delta\phi]^\mathrm{T}$，那么：
+$$
+\[
+\begin{aligned}
+\frac{\partial (T p)}{\partial \delta \boldsymbol{\xi}}
+&=
+\lim_{\delta \boldsymbol{\xi} \to 0}
+\frac{
+\exp(\delta \boldsymbol{\xi}^\wedge)\exp(\boldsymbol{\xi}^\wedge)p
+-
+\exp(\boldsymbol{\xi}^\wedge)p
+}{\delta \boldsymbol{\xi}} \\[6pt]
+
+&=
+\lim_{\delta \boldsymbol{\xi} \to 0}
+\frac{
+\left(I + \delta \boldsymbol{\xi}^\wedge\right)\exp(\boldsymbol{\xi}^\wedge)p
+-
+\exp(\boldsymbol{\xi}^\wedge)p
+}{\delta \boldsymbol{\xi}} \\[6pt]
+
+&=
+\lim_{\delta \boldsymbol{\xi} \to 0}
+\frac{
+\delta \boldsymbol{\xi}^\wedge \exp(\boldsymbol{\xi}^\wedge)p
+}{\delta \boldsymbol{\xi}} \\[10pt]
+
+&=
+\lim_{\delta \boldsymbol{\xi} \to 0}
+\frac{
+\begin{bmatrix}
+\delta \boldsymbol{\phi}^\wedge & \delta \boldsymbol{\rho} \\
+\mathbf{0}^T & 0
+\end{bmatrix}
+\begin{bmatrix}
+R p + t \\
+1
+\end{bmatrix}
+}{\delta \boldsymbol{\xi}} \\[10pt]
+
+&=
+\lim_{\delta \boldsymbol{\xi} \to 0}
+\frac{
+\begin{bmatrix}
+\delta \boldsymbol{\phi}^\wedge (R p + t) + \delta \boldsymbol{\rho} \\
+\mathbf{0}^T
+\end{bmatrix}
+}{[\delta \boldsymbol{\rho}, \delta \boldsymbol{\phi}]^T} \\[10pt]
+
+&=
+\begin{bmatrix}
+I & -(R p + t)^\wedge \\
+\mathbf{0}^T & \mathbf{0}^T
+\end{bmatrix}
+\;\triangleq\;
+(Tp)^\odot
+\end{aligned}
+\]
+$$
+
+> 定义算符$\odot$：
+>
+> 把一个齐次坐标的空间点变换成一个 4 *×* 6 的矩阵。此式稍微需要解释的是矩阵求导方面的顺序，假设 **a**, **b**, **x**, **y** 都是列向量，那么在我们的符号写法下，
+>
+> 有如下的规则：
+> $$
+> \begin{aligned}&\frac{\mathrm{d}\begin{bmatrix}a\\\\b\end{bmatrix}}{\mathrm{d}\begin{bmatrix}x\\\\y\end{bmatrix}}=\left(\frac{\mathrm{d}[\boldsymbol{a},\boldsymbol{b}]^\mathrm{T}}{\mathrm{d}\begin{bmatrix}x\\\\y\end{bmatrix}}\right)^\mathrm{T}=\begin{bmatrix}\frac{\mathrm{d}\boldsymbol{a}}{\mathrm{d}\boldsymbol{x}}&\frac{\mathrm{d}\boldsymbol{b}}{\mathrm{d}\boldsymbol{x}}\\\\\frac{\mathrm{d}\boldsymbol{a}}{\mathrm{d}\boldsymbol{y}}&\frac{\mathrm{d}\boldsymbol{b}}{\mathrm{d}\boldsymbol{y}}\end{bmatrix}^\mathrm{T}=\begin{bmatrix}\frac{\mathrm{d}\boldsymbol{a}}{\mathrm{d}\boldsymbol{x}}&\frac{\mathrm{d}\boldsymbol{a}}{\mathrm{d}\boldsymbol{y}}\\\frac{\mathrm{d}\boldsymbol{b}}{\mathrm{d}\boldsymbol{x}}&\frac{\mathrm{d}\boldsymbol{b}}{\mathrm{d}\boldsymbol{y}}\end{bmatrix}\end{aligned}
+> $$
+
+
+
+# 相机与图像
+
+在前面两讲中，我们介绍了“机器人如何表示自身位姿”的问题，部分地解释了 SLAM 经典模型
+
+中变量的含义和`运动方程`部分。
+
+本讲将讨论“机器人如何观测外部世界”，也就是`观测方程`部分。在以相机为主的视觉 SLAM 中，观测主要是指**相机成像**的过程。
+
+## 相机模型
+
+- `相机模型`：相机将**三维世界中的坐标点**（单位为米）映射到**二维图像平面**（单位为像素）的过程
+- `针孔模型`：针孔模型是很常用而且有效的模型，它描述了一束光线通过针孔之后，在针孔背面投影成像的关系。
+- `畸变`：由于相机镜头上的透镜的存在，使得光线投影到成像平面的过程中会产生畸变
+
+- `相机内参`：针孔模型与畸变能够把外部的三维点投影到相机内部成像平面，构成`相机的内参数`
+
+### 针孔相机模型
+
+<img src="./assets/image-20260318195801456.png" alt="image-20260318195801456" style="zoom: 33%;" />
+
+- **点与像的空间关系**
+
+  设$P$的坐标为$[X,Y,Z]^{\mathrm{T}},|P^\prime$为$[X^\prime,Y^\prime,Z^\prime]^{\mathrm{T}}$,并且设物理成像平面到小孔的距离为$f$(焦距)。那么，根据三角形相似关系，有：
+  $$
+  \frac{Z}{f}=-\frac{X}{X^{\prime}}=-\frac{Y}{Y^{\prime}}. \\
+  负号表示成的像是倒立的。小孔成像得到的就是倒立的图像
+  $$
+  但是实际上，我们使用手机拍摄照片时得到的图像是正像（这是因为计算机软件会帮我们把倒像变为正像），那么这个时候为了让模型更符合实际，我们可以等价地**把成像平面对称地放到相机前方**（不加限制的），和三维空间点一起放在摄像机坐标系的同一侧。
+
+  ![image-20260318203812580](./assets/image-20260318203812580.png)
+
+  这样子我们可以把公式中的负号去掉使式子更加简洁：
+  $$
+  \frac{Z}{f}=\frac{X}{X^{\prime}}=\frac{Y}{Y^{\prime}}. 
+  $$
+  得到`点P`在`成像平面`中的坐标：
+  $$
+  X^{\prime}=f\frac{X}{Z} \\
+  Y^{\prime}=f\frac{Y}{Z}
+  $$
+  在不引起歧义的情况下，我们也不加限制地称这一种情况为`针孔模型`。
+
+- **点在`像素坐标系`下**
+
+  在上面，我们描述了点P与它的像之间的空间关系。不过，在相机中，我们最终获得的是一个个的像素，这需要在成像平面上对像进行采样和量化。为了描述传感器将感受到的光线转换成图像像素的过程，我们设在`物理成像平面`上固定着一个`像素平面o-u-v`。我们在像素平面得到了`P'的像素坐标`：$[u,v]^T$
+
+  - `像素坐标系`的定义：`原点o'`位于图像的左上角，`u轴`向右与x轴平行，`v轴`向下与y轴平行。
+
+    （像素坐标系与成像平面之间，相差了一个**缩放**和一个**原点的平移**）
+
+  - `像素坐标系`与`成像平面`的关系：
+
+    `成像平面`的计数单位：米
+
+    `像素坐标系`的计数单位：像素
+
+    我们假设：像素坐标在
+
+    - 在`u轴`上缩放了α倍（即1m对应了α个像素，横向像素密度=α(pixel/m)）
+    - 在`v轴`上缩放了β倍（即1m对应了β个像素，纵向像素密度=β(pixel/m)）
+
+    - `原点`平移了$[c_x,c_y]^T$（单位是像素）
+
+    > **解释：为什么像素坐标在u轴与v轴上的缩放倍数不一致？**
+    >
+    > 这是因为像素可能不是`正方形`，所以 横向像素密度 != 纵向像素密度
+
+    那么$P'$在成像平面的坐标与`像素坐标`$[u,v]^T$的关系为：
+    $$
+    \begin{cases}u=\alpha X^{\prime}+c_x\\v=\beta Y^{\prime}+c_y&\end{cases}.
+    $$
+    我们代入**点P在`成像平面`的坐标**$X^{\prime}=f\frac{X}{Z} \\ Y^{\prime}=f\frac{Y}{Z}$，并把$\alpha f$合并为$f_x$，把$\beta f$合并为$f_y$得到：
+    $$
+    \begin{cases}u=f_x\frac{X}{Z}+c_x\\v=f_y\frac{Y}{Z}+c_y&\end{cases}.
+    $$
+    其中：$f$单位为米，$\alpha,\beta$单位为像素/米，所以$f_x,f_y$单位为像素。$c_x,c_y$单位也为像素
+
+    如果把这个式子变为矩阵，那就变为：
+    $$
+    \begin{pmatrix}u\\\\v\\\\1\end{pmatrix}=\frac{1}{Z}\begin{pmatrix}f_x&0&c_x\\\\0&f_y&c_y\\\\0&0&1\end{pmatrix}\begin{pmatrix}X\\\\Y\\\\Z\end{pmatrix}\overset{\Delta}{\operatorname*{=}}\frac{1}{Z}\boldsymbol{K}\boldsymbol{P}.
+    $$
+    把$Z$挪到左侧：
+    $$
+    Z\begin{pmatrix}u\\\\v\\\\1\end{pmatrix}=\begin{pmatrix}f_x&0&c_x\\\\0&f_y&c_y\\\\0&0&1\end{pmatrix}\begin{pmatrix}X\\\\Y\\\\Z\end{pmatrix}\triangleq\boldsymbol{K}\boldsymbol{P}.
+    $$
+    其中：
+
+    - $K$​：相机的`内参数矩阵`。通常认为，相机的内参在出厂之后是固定的，不会在使用过程中发生变化。有的相机生产厂商会告诉你相机的内参，而有时需要你自己确定相机的内参，也就是所谓的`标定`（张正友标定法）。
+
+  - **相机的`外参`**
+
+    > [!NOTE]
+    >
+    > `外参`会随着相机运动发生改变，同时也是 SLAM 中待估计的目标，代表着机器人的轨迹。
+
+    - **为什么需要外参？**
+
+      在上面，我们得到了**`相机坐标系`下的点P**到**`像素坐标系`下的点P'**的变化：
+      $$
+      P'=\frac{1}{Z}KP
+      $$
+      <span style="color:red">问题：点P必须是相机坐标系下的点，但是点P通常是在世界坐标系下的。所以我们还需要做世界坐标到相机坐标的转换</span>
+
+    - **`外参`的作用**
+
+      假设点$P$在`世界坐标系`下是$P_w$，在`相机坐标系`下是$P_c$，在`像素坐标系`下是$P'$
+
+      - 点$P$在世界坐标系下的表示：
+        $$
+        \mathbf{P}_w = (X_w, Y_w, Z_w)
+        $$
+
+      - 但投影公式需要点$P$在相机坐标系下的表示（即$P_c$）：
+        $$
+        \mathbf{P}_c = (X_c, Y_c, Z_c)
+        $$
+
+      所以`外参`就是描述把世界坐标系下的点$P_w$转换为相机坐标系下的点$P_c$
+
+    - **`外参`的组成**
+
+      外参由以下两个元素组成
+
+      旋转矩阵$R$：表示 世界坐标系到相机坐标系 的旋转
+
+      平移向量$t$：表示 世界原点在相机坐标系 中的位置
+      $$
+      P_c = R P_w + t \\
+      P'=\frac{1}{Z}KP_c
+      $$
+
+- `归一化`
+
+  我们可以把一个世界坐标点先转换到相机坐标系，再除掉它最后一维的数值（即该点距离相机成像平面的深度），这相当于把最后一维进行归一化处理，得到点 *P* 在相机归一化平面上的投影：
+  $$
+  (\boldsymbol{RP}_w+\boldsymbol{t})=\underbrace{\left[X,Y,Z\right]^\mathrm{T}}_\text{相机坐标}\to\underbrace{\left[X/Z,Y/Z,1\right]^\mathrm{T}}_\text{归一化坐标}.
+  $$
+  因为此时P点的相机坐标的Z维为1，我们可以理解为此时点P变为相机前方z=1处的平面上的一个点，这个Z=1的平面也叫`归一化平面`
+
+
+
+### 透镜问题：畸变
+
+#### 径向畸变
+
+> `径向畸变`的产生原因：透镜自身的形状对光线传播的影响
+
+![image-20260319094347290](./assets/image-20260319094347290.png)
+
+径向畸变也可以分为`桶形畸变`、`枕形畸变`。产生这些畸变跟透镜本身有关
+
+
+
+#### 切向畸变
+
+> `切向畸变`的产生原因：在机械组装过程中，透镜和成像平面不可能完全平行，这使得光线穿过透镜投影到成像面时的位置发生变化
+
+如下图，由于工艺问题，`摄像头传感器`与`垂直平面`并不平行，这就导致光线到达摄像头传感器的位置并不是实际位置。（在这张图中的表现就是成像要整体向上）
+
+<img src="./assets/image-20260319095527887.png" alt="image-20260319095527887" style="zoom:50%;" />
+
+
+
+
+
+#### 畸变的数学表达
+
+- 考虑`归一化平面`上的任意一点P，`坐标`为$[x,y]^T$，也可以写成`极坐标`形式$[r,\theta]^T$，其中$r$表示点P与坐标系原点之间的距离，$\theta$表示与水平轴的夹角。
+
+  `径向畸变`可看成坐标点沿着长度方向发生了变化，也就是其**距离原点的长度**发生了变化。
+
+  `切向畸变`可以看成坐标点沿着切线方向发生了变化，也就是**水平夹角**发生了变化。
+
+- **构建相机镜头的`畸变模型`**（使用多项式近似的方法）
+
+  - `径向畸变模型`：点离图像中心越远，位置被“拉伸或压缩”的程度越大
+    $$
+    \begin{aligned}x_{\mathrm{distorted}}&=x(1+k_1r^2+k_2r^4+k_3r^6)\\y_{\mathrm{distorted}}&=y(1+k_1r^2+k_2r^4+k_3r^6)\end{aligned}.
+    $$
+    其中：
+
+    - $x, y$：**理想无畸变坐标（归一化平面）**
+    - $x_{distorted}, y_{distorted}$：**实际成像后的坐标（畸变后点的归一化坐标）**
+    - $r^2 = x^2 + y^2$：点到图像中心的距离平方
+    - $k_1, k_2, k_3$：畸变系数
+
+    这个公式描述了图像离中心近时几乎没有畸变，但是离中心越远畸变效果越大
+
+  - `切向畸变模型`：
+    $$
+    \begin{aligned}x_{\mathrm{distorted}}&=x+2p_1xy+p_2(r^2+2x^2)\\y_{\mathrm{distorted}}&=y+p_1(r^2+2y^2)+2p_2xy\end{aligned}.
+    $$
+    其中：
+
+    - $x, y$：理想坐标（归一化平面）
+    - $x_{distorted}, y_{distorted}$：实际成像后的坐标（畸变后点的归一化坐标）
+    - $r^2 = x^2 + y^2$：点到图像中心的距离平方
+    - $p_1, p_2$：切向畸变系数
+
+  - 汇总：
+
+    联合上面两个式子，对于相机坐标系中的一点 **P**，我们能够通过 5 个畸变系数找到这个点在像素平面上的正确位置：
+
+    - 将三维空间点投影到归一化图像平面。设它的归一化坐标为 $[x,y]^T$。
+
+    - 对归一化平面上的点计算`径向畸变`和`切向畸变`。
+      $$
+      \begin{cases}x_\mathrm{distorted}=x(1+k_1r^2+k_2r^4+k_3r^6)+2p_1xy+p_2(r^2+2x^2)\\y_\mathrm{distorted}=y(1+k_1r^2+k_2r^4+k_3r^6)+p_1(r^2+2y^2)+2p_2xy&\end{cases}.
+      $$
+
+    - 将畸变后的点通过内参数矩阵投影到像素平面，得到该点在图像上的正确位置。
+      $$
+      \begin{cases}u=f_xx_\mathrm{distorted}+c_x\\v=f_yy_\mathrm{distorted}+c_y&\end{cases}.
+      $$
+
+
+
+### 单目相机的成像过程
+
+1. 首先，世界坐标系下有一个固定的点$P$，世界坐标为$P_w$
+
+2. 由于相机在运动，它的运动由 `外参`$R,t$ 或 变换矩阵$T \in SE(3)$ 描述。$P$的相机坐标为$\tilde{P}_c = R P_w + t$
+
+3. 这时的$\tilde{P}_c$的分量为$X,Y,Z$ ,把它们投影到`归一化`平面$Z=1$上，得到$P$的归一化坐标：$P_c=[X/Z,Y/Z,1]^{\mathrm{Tの}}$。
+
+4. 有`畸变`时，根据畸变参数计算$P_c$发生畸变后的坐标。
+
+5. 最后，$P$的归一化坐标经过`内参`后，对应到它的像素坐标：$P_uv=KP_c$
+
+
+
+# 非线性优化
+
+- **导入**：在前面我们介绍了经典SLAM模型的运动方程和观测方程。
+
+  - `运动方程`和`观测方程`中的位姿可以由`变换矩阵`$SE(3)$来描述，然后用`李代数`进行优化。
+
+  - `观测方程`由相机成像模型给出，其中**内参**是随相机固定的，而**外参**则是相机的位姿。
+
+- **问题**：现实世界存在`噪声`
+
+  因为噪声，**运动方程和观测方程的等式** 不是精确成立的。
+
+  所以，与其**假设数据必须符合方程**，不如来讨论<span style="color:red">如何在有噪声的数据中进行准确的状态估计</span>。
+
+  👉这就是非线性优化讨论的问题
+
+
+
+## 状态估计问题
+
+- **经典SLAM模型**：一个运动方程 + 一个观测方程
+  $$
+  \left.\left\{\begin{array}{l}\boldsymbol{x}_k=f\left(\boldsymbol{x}_{k-1},\boldsymbol{u}_k\right)+\boldsymbol{w}_k\\\boldsymbol{z}_{k,j}=h\left(\boldsymbol{y}_j,\boldsymbol{x}_k\right)+\boldsymbol{v}_{k,j}\end{array}\right.\right.
+  $$
+  对运动方程：
+
+  - $x_k$：表示相机在k时刻的位姿
+  - $u_k$：运动传感器的`读取（从运动传感器获取数据）`或`输入（把这些数据送入系统进行处理）`
+
+  - $w_k$：为该过程加入噪声（因为现实中传感器的数据不可能是完美的）
+
+
+  对观测方程：
+
+  - $x_k$：表示相机在k时刻的位姿
+
+
+  - $y_j$：第$j$个路标在世界坐标系中的位置（未知）
+  - $h(x_k	, y_j)$：理想观测（预测值）
+  - $z_{k,j}$：在 时刻$k$ 机器人对 第$j$个路标 的观测
+  - $v_{k,j}$：各种观测噪声
+
+
+
+- **把 SLAM 的“`抽象观测方程`”具体展开成“`相机成像公式`”**：
+
+  因为我们知道`抽象观测方程`是：$z_{k,j} = h(x_k, y_j)$，当我们用相机成像来表达，就变为：
+  $$
+  s z_{k,j} = K(R_k y_j + t_k)
+  $$
+  其中：
+
+  - $P_c = R_k y_j + t_k$：把路标点从世界坐标系变到相机坐标系
+
+  - $K P_c$​：乘以内参，得到$K P_c =
+    \begin{bmatrix}
+    f_x & 0 & c_x \\
+    0 & f_y & c_y \\
+    0 & 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+    X_c \\ Y_c \\ Z_c
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    f_x X_c + c_x Z_c \\
+    f_y Y_c + c_y Z_c \\
+    Z_c
+    \end{bmatrix}$，但是这里仍然是齐次坐标，而不是真正的像素坐标
+
+  - $s$：就是$P'=\frac{1}{Z}KP_c$中的$Z$，用于做归一化，即得到$z_{k,j} =
+    \begin{bmatrix}
+    u \\ v
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \frac{f_x X_c}{Z_c} + c_x \\
+    \frac{f_y Y_c}{Z_c} + c_y
+    \end{bmatrix}$。这一步是把路标点从相机坐标变为像素坐标
+
+- **运动与观测中的`噪声`**
+
+  在运动和观测中，我们通常假设两个噪声$w_k,v_{k,j}$满足`零均值的高斯分布（也叫高斯分布）`：
+  $$
+  \boldsymbol{w}_k\sim\mathcal{N}\left(\boldsymbol{0},\boldsymbol{R}_k\right),\boldsymbol{v}_k\sim\mathcal{N}\left(\boldsymbol{0},\boldsymbol{Q}_{k,j}\right).
+  $$
+  其中：
+
+  - $\mathcal{N}$：表示这两个噪声满足高斯分布
+  - $0$：表示零均值（在x=0处是高峰）
+  - $\boldsymbol{R}_k,\boldsymbol{Q}_{k,j}$：协方差矩阵$\mathbf{R}=\begin{bmatrix}\sigma_x^2&\mathrm{cov}_{xy}\\\mathrm{cov}_{yx}&\sigma_y^2\end{bmatrix}$，其中
+    - $\sigma_x^2$：x方向误差
+    - $\sigma_y^2$：y方向误差
+    - $\mathrm{cov}_{xy}$：表示x误差变大时，y会不会也跟着变？（如过机器人往前走时x误差变大，y也随着偏，那就具有相关性）
+    - $\mathrm{cov}_{yx}$：表示y误差变大时，x会不会也跟着变？
+
+  那么我们得到我们要求的：
+
+  > `状态估计问题`：
+  >
+  > 在这些噪声的影响下，我们希望通过带噪声的数据（带噪声的运动数据、带噪声的观测数据）来推断机器人的`位姿x`与`地图y（特征点）`
+
+- **处理`状态估计问题`的两种方法**：
+
+  - `增量/渐进的方法（滤波器）`
+
+    > `增量方法`：由于在 SLAM 过程中，这些数据是随时间逐渐到来的，所以在直观上，我们应该**持有一个当前时刻的估计状态**，然后**用新的数据来更新它**。
+
+    最常用的方法是`滤波器`，尤其是`扩展卡尔曼滤波器（EKF）`及其衍生方法
+
+  - `批量的方法`
+
+    > `批量的方法`：把数据“攒”起来一并处理
+
+    例如：我们可以把 0 到 *k* 时刻所有的输入和观测数据都放在一起，问，在这样的输入和观测下，如何估计整个 0 到 *k* 时刻的轨迹与地图？
+
+    | 维度           | 增量方法（Incremental / Filtering） | 批量方法（Batch / Optimization）          |
+    | -------------- | ----------------------------------- | ----------------------------------------- |
+    | 🎯 核心思想     | 只关注**当前时刻状态 $x_k$**        | 同时优化**所有状态 $x_{0:k}$ + 地图 (y)** |
+    | 🧠 数学形式     | 递推更新（贝叶斯滤波）              | 全局最小化（非线性优化）                  |
+    | 📌 典型方法     | EKF-SLAM、UKF、粒子滤波             | BA（Bundle Adjustment）、图优化           |
+    | 📍 是否保留历史 | ❌ 不显式保留（或被压缩）            | ✅ 显式保留所有历史变量                    |
+    | 🔄 更新方式     | 来一帧 → 更新一次                   | 收集一批 → 一起优化                       |
+    | ⚡ 实时性       | ✅ 强（适合在线）                    | ❌ 弱（原始形式不实时）                    |
+    | 🎯 精度         | 中等（线性化误差累积）              | 高（全局一致性好）                        |
+    | 📉 误差处理     | 局部传播误差                        | 全局统一调整误差                          |
+    | 🔗 数据利用     | 只用当前 + 上一时刻                 | 用**全部历史观测**                        |
+    | 🧩 闭环处理     | 困难（需要额外机制）                | 天然支持（全局优化）                      |
+    | 💻 计算复杂度   | 低（但状态增长会变慢）              | 高（尤其大规模时）                        |
+
+  - **折衷上面两者的方法**：
+
+    批量的方法可以在更大的范围达到最优化，比增量方法强。
+
+    但是批量的方法实时性弱，增量方法实时性强
+
+    所以在SLAM中，实用的方法是一些折衷的方法。比如：
+
+    `滑动窗口估计法`：我们固定一些历史轨迹，仅对当前时刻附近的一些轨迹进行优化
+
+
+
+### 批量状态估计与最大后验估计
+
+- **前言**：
+
+  因为相比而言，`批量方法`更加适合我们理解，而且理解了`批量方法`后我们也可以更容易理解`增量方法`，所以我们先讨论`批量方法`
+
+- **问题引出**：考虑从 $1$到$N$ 的所有时刻，并假设有 $M$ 个路标点。
+
+  - 定义所有时刻的 **机器人在世界坐标系下的位姿** 和 **路标点在世界坐标系下的坐标** 为：
+    $$
+    x=\{x_1,\ldots,x_N\},\quad y=\{y_1,\ldots,y_M\}.
+    $$
+
+  - 定义所有时刻的 **机器人的控制输入** 和 **相机的观测数据** 为：
+    $$
+    u = \{u_1, ..., u_N\},z=\{z_{k,j}\}
+    $$
+
+  - 从`概率学`的观点来看，`状态估计问题`等同于已知**输入数据 $u$** 和**观测数据 $z$** 的条件下，求**状态 $x,y$** 的**条件概率分布**
+    $$
+    P(x,y|z,u).\\
+    表示在z,u已经发生的前提下，x,y发生的概率
+    $$
+
+    > [!IMPORTANT]
+    >
+    > **特例**：从许多图像中重建三维空间结构`Structure from Motion（SfM）`
+    >
+    > - 当我们不知道控制输入，只有一张张的图像时，即只考虑观测方程带来的数据时，相当于估计 $P(x, y|z)$ 的条件概率分布，即如何从许多图像中重建三维空间结构。
+
+- 计算$P(x,y|z,u)$：
+  $$
+  P\left(\boldsymbol{x},\boldsymbol{y}|\boldsymbol{z},\boldsymbol{u}\right)
+  \overset{\text{条件概率的定义}}{=} \frac{P(\boldsymbol{x},\boldsymbol{y},\boldsymbol{z},\boldsymbol{u})}{P(\boldsymbol{z},\boldsymbol{u})}
+  \overset{\text{贝叶斯法则}}{=} \frac{P\left(\boldsymbol{z},\boldsymbol{u}|\boldsymbol{x},\boldsymbol{y}\right)P\left(\boldsymbol{x},\boldsymbol{y}\right)}{P\left(\boldsymbol{z},\boldsymbol{u}\right)}
+  $$
+  因为分母 $P(z,u)$ 是常数（与 $x,y$ 无关），所以
+  $$
+  P(x,y|z,u) \propto \underbrace{P\left(\boldsymbol{z},\boldsymbol{u}|\boldsymbol{x},\boldsymbol{y}\right)}_\text{似然}\underbrace{P\left(\boldsymbol{x},\boldsymbol{y}\right)}_\text{先验} \\
+  \propto 的意思是正比于
+  $$
+  在`贝叶斯法则`下，有这么几个概念：
+
+  - `先验`（人为假设）：$P(x)$，表示在看数据之前，你对x的原始相信程度
+
+  - `似然`：$P(z|x)$，表示如果x是真的，那么观测到z的概率是多少
+  - `后验`：$P(x|z)$，表示在看到数据z后，x有多大概率成立
+
+  $$
+  \boxed{
+  \text{后验} = \text{似然} \times \text{先验}
+  }
+  $$
+
+  > **举个例子**：
+  >
+  > - 场景：判断是否生病
+  >
+  > - 假设：
+  >   $$
+  >   P(z,x)=P(z|x)P(x)
+  >   $$
+  >
+  >   - $x$：是否生病
+  >
+  >   - $z$：检测结果（阳性）
+  >
+  > - `先验`：$P(x)$，人为假设大部分人是健康的
+  >
+  > - `似然`：$P(z|x)$
+  >   - 如果生病 -> 很可能测出阳性的概率
+  >   - 如果没病 -> 也可能测出阳性的概念（误报）
+  >   
+  > - `后验`：$P(x|z)$，已经测出阳性了，你到底有多大概率真的生病？
+  
+- **求`概率最大值`而不去求`概率分布`**
+
+  - 🤔如果我们直接去求$P\left(\boldsymbol{x},\boldsymbol{y}|\boldsymbol{z},\boldsymbol{u}\right)$的概率分布，然后再去找最大值，会很困难：
+
+    因为这是一个高维分布，非线性，形状不规则的概率分布
+
+  - 所以我们不求$P\left(\boldsymbol{x},\boldsymbol{y}|\boldsymbol{z},\boldsymbol{u}\right)$的概率分布，而是直接去求一个**可能的最大值**，这是可行的：
+    $$
+    \boxed{
+    \text{MAP：找一个最可能的 }(x,y)，而不是求整个概率分布
+    }
+    $$
+
+    $$
+    (x,y)^*_{\text{MAP}} = \arg\max P(x,y|z,u)
+    $$
+
+    **含义**：在所有可能的 $x,y$ 中，找一个让概率最大的
+
+  - 用**贝叶斯公式**展开：
+    $$
+    (x,y)^*_{\text{MAP}} =\arg\max P(z,u|x,y)\left.P(x,y)\right.
+    $$
+    `贝叶斯法则`告诉我们，求解**最大后验概率**等价于**最大化`似然`和`先验`的乘积**。
+
+    > [!NOTE]
+    >
+    > 这里贝叶斯展开后忽略了分母。这是因为我们要求的是概率最大值出现的位置，即x
+    >
+    > 而$P(z,u)$表达的意思是观测数据和控制数据本身出现的概率（如某一张图像像素刚好这样排列，某一段轨迹刚好这样），所以是一个 大于0的常数
+    >
+    > 而这个常数不会改变“哪个(x,y)取得最大值”，只会缩放概率的数值
+
+  - **求`最大似然估计`**
+
+    进一步说，我们可以说**我不知道机器人位姿或路标大概在什么地方**，此时就没有了**先验**。那么，此时就可以求解`最大似然估计`
+    $$
+    (\boldsymbol{x},\boldsymbol{y})_{\mathrm{MLE}}^*=\arg\max P(\boldsymbol{z},\boldsymbol{u}|\boldsymbol{x},\boldsymbol{y}).
+    $$
+    `似然`的含义：直观理解就是“**在现在的位姿下，可能产生怎样的观测数据**”。
+
+    由于我们知道观测数据，所以`最大似然估计`可以理解成：“**在什么样的状态下，最可能产生现在观测到的数据**”。
+
+
+
+### 最小二乘的引出
+
+- 我们知道，在观测模型中，我们得到的观测值是：
+  $$
+  \boldsymbol{z}_{k,j}=h\left(\boldsymbol{y}_j,\boldsymbol{x}_k\right)+\boldsymbol{v}_{k,j}
+  $$
+
+- 然后我们还知道：
+
+  - $h\left(\boldsymbol{y}_j,\boldsymbol{x}_k\right)$：理想（无噪声）观测，也就是说相机真的在 $x_k$，路标真的在 $y_j$，相机观察的值就是固定的
+  - 噪声项$\boldsymbol{v}_k\sim\mathcal{N}\left(\boldsymbol{0},\boldsymbol{Q}_{k,j}\right)$
+
+  > [!NOTE]
+  >
+  > 高斯噪声加到谁身上，谁就变成高斯分布（均值被平移）
+
+  所以：
+  $$
+  z_{k,j} \sim \mathcal{N}(h(x_k, y_j), Q_{k,j})
+  $$
+  也就是说此时此时观测数据的条件概率为（结果依然是一个高斯分布）：
+  $$
+  \boxed{P(\boldsymbol{z}_{j,k}|\boldsymbol{x}_k,\boldsymbol{y}_j)=N\left(h(\boldsymbol{y}_j,\boldsymbol{x}_k),\boldsymbol{Q}_{k,j}\right).}
+  $$
+
+
+- **求单次观测的`最大似然估计`**——`最小化负对数`
+
+  > `最小化负对数`：
+  >
+  > - 在概率模型和机器学习里，它通常等价于`最大化概率（最大似然）`
+  >
+  > - `最大似然`：
+  >
+  >   - 假设你有一组观测数据 $\mathcal{D}$，模型参数是 $\theta$，我们希望：
+  >     $$
+  >     \max_{\theta} \; p(\mathcal{D} \mid \theta)
+  >     $$
+  >     也就是：**找到让数据出现概率最大的参数**。
+  >
+  >   - 对于 该组观测数据$\mathcal{D}$ 中的每个 观测值$\mathcal{D}_i$，
+  >
+  >     每一个 观测值$\mathcal{D}_i$ 在 参数$\theta$ 下都有自己出现的概率，即 $p(\mathcal{D}_i \mid \theta)$
+  >
+  >     那么 该组观测数据$\mathcal{D}$ 同时出现的概率就是 $p(\mathcal{D} \mid \theta) = \mathcal{P}\left(\mathcal{D}_{1}|\boldsymbol{\theta}\right)\times\mathcal{P}\left(\mathcal{D}_{2}|\boldsymbol{\theta}\right)\times\mathcal{P}\left(\mathcal{D}_{3}|\boldsymbol{\theta}\right)\times\cdots\times\mathcal{P}\left(\mathcal{D}_{n}|\boldsymbol{\theta}\right)$​，也写做：
+  >     $$
+  >     \boxed{p(\mathcal{D} \mid \theta) = \prod_i p(D_i \mid \theta)}
+  >     $$
+  >     （这个过程可以解释为 每个观测值$\mathcal{D}_i$都在为参数$\theta$的真是面貌投票）
+  >
+  >     ![image-20260320144933022](./assets/image-20260320144933022.png)
+  >
+  >   - **选择概率模型**
+  >
+  >     光有公式不够，我们还需要选一个概率模型（也就是概率是怎么样的分布）
+  >     $$
+  >     L(\theta)=P(Y|\theta)=\prod_{i=1}^n\overbrace{p(y_i\mid\theta)}^{\text{概率分布}}
+  >     $$
+  >     比如，如果是抛硬币问题，选择伯努利分布
+  >     $$
+  >     L(\theta)=P(Y|\theta)=\prod_{i=1}^n\overbrace{\theta^{y_i}(1-\theta)^{1-y_i}}^{\text{伯努利分布}}
+  >     $$
+  >     如果是测量误差就使用正态分布
+  >     $$
+  >     L(\theta)=P(Y|\theta)=\prod_{i=1}^n\overbrace{\frac{1}{\sqrt{2\pi\sigma^2}}\exp{(-\frac{(y_i,\mu)^2}{2\sigma^2})}}^\text{正态分布}
+  >     $$
+  >
+  >   - **估计`参数`$\theta$**
+  >
+  >     我们去估计参数的值（随便猜），然后取 $p(\mathcal{D} \mid \theta)$最大时 对应的 参数$\theta$
+  >
+  >     ![image-20260320150345935](./assets/image-20260320150345935.png)
+  >
+  > - 🤔**为什么要取对数？**
+  >
+  >   我们看最大化概率的计算公式：
+  >   $$
+  >   L(\theta)=P(Y|\theta)=\prod_{i=1}^n\overbrace{p(y_i\mid\theta)}^{\text{概率分布}}
+  >   $$
+  >   我们很容易发现这个连乘会造成一个问题：如果一个概率很小（如$10^{-100}$），在计算机中连乘就直接变成0了
+  >
+  > - 🤔**怎么办呢？`最小化负对数`**
+  >
+  >   - `取对数`：（把连乘变为连加，并且数值更加稳定）
+  >     $$
+  >     \log p(\mathcal{D}|\theta) = \sum_i \log p(x_i|\theta)
+  >     $$
+  >     **（取对数后，仍然取`最大化对数概率`）**
+  >
+  >   - 其实取对数就已经能供解决问题了。🤔那为什么还要`最小化负对数`？
+  >
+  >     这是因为很多优化算法（如梯度下降）习惯写成：$\min_{\theta}\mathrm{~loss}$
+  >
+  >     其中$loss$就是`损失函数`，$\boxed{\mathrm{Loss}(\theta)=-\log p(\mathcal{D}|\theta)}$
+  >
+  >     - 如果模型预测数据的概率高 → loss 小 → 模型好
+  >
+  >     - 如果模型预测数据的概率低 → loss 大 →模型差
+  >
+  >     所以：
+  >     $$
+  >     \max_\theta\log p(\mathcal{D}|\theta)\quad\Longleftrightarrow\quad\min_\theta-\log p(\mathcal{D}|\theta)
+  >     $$
+  >
+  > - **结论**：
+  >
+  >   <div style="color: red; text-align: center;">最大化概率 == 最大化对数概率 == 最小化负对数概率</div>
+
+  - 因为前面说$\boxed{P(\boldsymbol{z}_{j,k}|\boldsymbol{x}_k,\boldsymbol{y}_j)=N\left(h(\boldsymbol{y}_j,\boldsymbol{x}_k),\boldsymbol{Q}_{k,j}\right).}$是一个高斯分布
+
+    对于**任意`高维`**高斯分布$\boldsymbol{x}\sim\mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})$，它的`概率密度函数`展开形式为：
+    $$
+    P(\boldsymbol{x})={\frac{1}{\sqrt{(2\pi)^{N}\operatorname*{det}(\boldsymbol{\Sigma})}}}\exp\left(-{\frac{1}{2}}(\boldsymbol{x}-\boldsymbol{\mu})^{\mathrm{T}}\boldsymbol{\Sigma}^{-1}(\boldsymbol{x}-\boldsymbol{\mu})\right).
+    $$
+    对其取`负对数`，变为：
+    $$
+    -\ln\left(P\left(\boldsymbol{x}\right)\right)=\frac{1}{2}\ln\left(\left(2\pi\right)^{N}\det\left(\boldsymbol{\Sigma}\right)\right)+\frac{1}{2}{\left(\boldsymbol{x}-\boldsymbol{\mu}\right)}^{\mathrm{T}}\boldsymbol{\Sigma}^{-1}\left(\boldsymbol{x}-\boldsymbol{\mu}\right).
+    $$
+    因为第一项$\frac{1}{2}\ln\left(\left(2\pi\right)^{N}\det\left(\boldsymbol{\Sigma}\right)\right)$与x无关，所以可以直接省略，只需使第二项$\frac{1}{2}{\left(\boldsymbol{x}-\boldsymbol{\mu}\right)}^{\mathrm{T}}\boldsymbol{\Sigma}^{-1}\left(\boldsymbol{x}-\boldsymbol{\mu}\right).$最小化，就得到了于是，只要最小化右侧的二次型项，就得到了对状态的最大似然估计。
+
+  - 又因为在前面我们知道**SLAM的观测模型** $z_{k,j} \sim \mathcal{N}(h(x_k, y_j), Q_{k,j})$ ，该式子就是一个`高维高斯分布`
+
+    所以代入 **SLAM 的观测模型**，对其求`最大似然估计`：
+    $$
+    (x_k, y_j)^* = \arg\max \mathcal{N}(h(y_j, x_k), Q_{k,j})
+    $$
+    其中：
+
+    - $h(\boldsymbol{y}_j,\boldsymbol{x}_k)$：均值
+    - $Q_{k,j}$：协方差矩阵
+
+    然后使用`最小化负对数`
+    $$
+    (x_k, y_j)^*
+    =
+    \arg\min
+    (z_{k,j} - h(x_k, y_j))^T
+    Q_{k,j}^{-1}
+    (z_{k,j} - h(x_k, y_j))
+    $$
+
+  - **SLAM 的优化，其实就是在最小化一种“带权的误差长度” —— 这个长度叫`马氏距离`**
+
+    **推导过程**：
+
+    - 在上面我们得到了 $(z-h(x,y))^TQ^{-1}(z-h(x,y))$ 
+
+      假设我们定义`误差`：$e=z-h(x,y)$
+
+      那么这个式子就变成了 $e^TQ^{-1}e$
+
+    - `二次型`
+
+      > `二次型`：是一个关于多个变量的**二次齐次多项式**（“齐次”意味着每一项的次数**正好都是 2**）
+      >
+      > 例如：
+      >
+      > - （二元）： $f(x, y) = ax^2 + bxy + cy^2$
+      > - （三元）： $f(x, y, z) = x^2 + 2y^2 - 3z^2 + 4xy$
+
+      那么根据`二次型`的定义，我们很容易看出下面这个式子是一种二次型：
+      $$
+      e^TAe
+      $$
+      我们可以这样理解：
+
+      - 普通平方：$x^2$
+      - 向量平方：$e^T e$
+      - 加权平方：$e^T A e$
+
+    - **与`欧氏距离`的关系**
+
+      普通欧式距离：$\|e\|^2=e^Te$，🤔为什么？
+
+      > `欧式距离`（欧式距离就是某个点离坐标系原点的距离）
+      >
+      > - `一维`
+      >
+      >   假设一个点距离原点为$x$，即$e=x$
+      >
+      >   那么欧式距离的平方就是：$\|e\|^2=x^2$
+      >
+      > - `二维`
+      >
+      >   假设一个点位于坐标系的$(e_x,e_y)$处，那么欧氏距离的平方就是：$\|e\|^2=e_x^2+e_y^2$
+      >
+      >   我们写成`矩阵`的形式$e=\begin{bmatrix}e_x\\e_y\end{bmatrix}$，那么欧氏距离的平方：
+      >   $$
+      >   \|e\|^2=e^Te=\begin{bmatrix}e_x&e_y\end{bmatrix}\begin{bmatrix}e_x\\e_y\end{bmatrix}=e_x^2+e_y^2
+      >   $$
+      >
+      > - **推广到`n维`**
+      >
+      >   如果：
+      >   $$
+      >   e =
+      >   \begin{bmatrix}
+      >   e_1 \\
+      >   e_2 \\
+      >   \vdots \\
+      >   e_n
+      >   \end{bmatrix}
+      >   $$
+      >   那么：
+      >   $$
+      >   e^T e = e_1^2 + e_2^2 + \cdots + e_n^2
+      >   $$
+      >   正好就是：
+      >   $$
+      >   \|e\|^2
+      >   $$
+
+      而我们讨论的式子是：$e^TQ^{-1}e$ 。🤔我们发现，这个式子又跟我们认识的`欧氏距离`不太一样了。这其实是因为：
+
+      - 普通欧氏距离是：$\|e\|^2=e^Te=e^TIe$ ，也就是说这里$Q$只是变成了单位矩阵$I$
+      - 我们讨论$e^TQ^{-1}e$时，可以理解为 **不同方向的误差，被放大/缩小了**
+
+      **举个例子**：
+
+      假设误差是二维：
+      $$
+      e =
+      \begin{bmatrix}
+      e_x \\
+      e_y
+      \end{bmatrix}
+      $$
+      如果协方差矩阵：
+      $$
+      Q =
+      \begin{bmatrix}
+      1 & 0 \\
+      0 & 100
+      \end{bmatrix}
+      \Rightarrow
+      Q^{-1} =
+      \begin{bmatrix}
+      1 & 0 \\
+      0 & 0.01
+      \end{bmatrix}
+      $$
+      代入：
+      $$
+      e^T Q^{-1} e = e_x^2 + 0.01 e_y^2
+      $$
+      意味着：
+
+      - $e_x$：正常惩罚
+      - $e_y$：几乎不惩罚
+
+      物理意义
+
+      - **哪个方向噪声大，表示该方向标准差大， 同样的误差 $e$，相对于噪声来说更小 -> 惩罚小**
+      - **哪个方向噪声小，表示该方向标准差小。同样的误差 $e$，相对于噪声来说更大 -> 惩罚大**
+
+    - **引出`马氏距离`**
+
+      `马氏距离`的定义：类似于加权欧氏距离
+      $$
+      d_M(e)=\sqrt{e^TQ^{-1}e}
+      $$
+      马氏距离与欧式距离的区别
+
+      | 距离类型 | 公式           | 特点             |
+      | -------- | -------------- | ---------------- |
+      | 欧氏距离 | $e^T e$        | 所有方向一样     |
+      | 马氏距离 | $e^T Q^{-1} e$ | 不同方向权重不同 |
+
+    - **为什么 $Q^{-1}$ 叫“`信息矩阵`”？**
+
+      我们知道 协方差$Q$ 表示 **不确定性**
+
+      那么 协方差的逆$Q^{-1}$ 就表示 **确定性（也叫信息量）**
+
+      👉**所以**：信息矩阵越大 → 这个观测越“可信” → 对误差e的惩罚越重
+
+
+- **因式分解**
+
+  > `独立的定义`：
+  >
+  > 如果随机变量 $X, Y$ 独立：
+  > $$
+  > P(X, Y) = P(X)\,P(Y)
+  > $$
+  > `马尔可夫性`：
+  >
+  > 未来只和“现在”有关，和“更早的过去”无关
+  > $$
+  > P(x_k\mid x_1,x_2,\ldots,x_{k-1})=P(x_k\mid x_{k-1})
+  > $$
+  > `链式法则`：（绝对成立）
+  > $$
+  > P(z_1,z_2,\ldots,z_n\mid x,y)=\prod_iP(z_i\mid z_1,\ldots,z_{i-1},x,y)
+  > $$
+
+  通常假设各个时刻的输入和观测是相互独立的，这意味着各个**输入之间是独立**的，各个**观测之间是独立**的，并且**输入和观测也是`独立`**的。于是我们可以对联合分布进行因式分解
+  $$
+  P(\boldsymbol{z},\boldsymbol{u}\mid\boldsymbol{x},\boldsymbol{y})=P(\boldsymbol{u}\mid\boldsymbol{x},\boldsymbol{y})\cdot P(\boldsymbol{z}\mid\boldsymbol{u},\boldsymbol{x},\boldsymbol{y})
+  $$
+
+  - 因为 假设1：**控制 不依赖 路标点位置**，所以：
+    $$
+    P(\boldsymbol{u}\mid\boldsymbol{x},\boldsymbol{y})=P(\boldsymbol{u}\mid\boldsymbol{x})
+    $$
+    因为 假设2：**观测 与 控制 条件独立**，所以：
+    $$
+    P(\boldsymbol{z}\mid\boldsymbol{u},\boldsymbol{x},\boldsymbol{y})=P(\boldsymbol{z}\mid\boldsymbol{x},\boldsymbol{y})
+    $$
+    其中：
+
+    - $P(\boldsymbol{u}|\boldsymbol{x})$：控制项。因为控制只来自运动模型，所以$P(u\mid x,y)=P(u\mid x)$
+    - $P(\boldsymbol{z}|\boldsymbol{x},\boldsymbol{y})$：观测项。因为观测不依赖控制，所以$P(z\mid u,x,y)=P(z\mid x,y)$
+
+  - 将`控制项`变为乘积
+
+    使用`马尔可夫性`，表示**当前控制只和上一时刻状态$x_{k-1}$、当前状态$x_k$有关**。和更早的无关。
+    $$
+    P(\boldsymbol{u}|\boldsymbol{x})=\prod_kP(\boldsymbol{u}_k|\boldsymbol{x}_{k-1},\boldsymbol{x}_k)
+    $$
+
+  - 将`观测项`变成乘积
+
+    - 因为`概率链式法则`：
+      $$
+      P(z_1,z_2,\ldots,z_n\mid x,y)=\prod_iP(z_i\mid z_1,\ldots,z_{i-1},x,y)
+      $$
+
+    - 因为**观测**之间`条件独立`：
+
+      在已知所有位姿 $x$ 和地图点 $y$ 的情况下，每个观测$z$ 之间互不影响，所以`概率链式法则`中的$P(z_i\mid z_1,\ldots,z_{i-1},x,y)$根据`条件独立`替换为$P(z_i\mid x,y)$，得到：
+      $$
+      P(\boldsymbol{z}\mid\boldsymbol{x},\boldsymbol{y})=\prod_iP(z_i\mid x,y)
+      $$
+
+    - 又因为`局部性原理`：
+
+      每个观测 $z_{k,j}$ 其实只和：当前位姿 $x_k$，对应地图点 $y_j$ 有关
+      $$
+      P(\boldsymbol{z}|\boldsymbol{x},\boldsymbol{y})=\prod_{k,j}P(\boldsymbol{z}_{k,j}|\boldsymbol{x}_k,\boldsymbol{y}_j)
+      $$
+
+  - 得到最终联合分布的因式分解：
+    $$
+    P\left(\boldsymbol{z},\boldsymbol{u}|\boldsymbol{x},\boldsymbol{y}\right)=\prod_kP\left(\boldsymbol{u}_k|\boldsymbol{x}_{k\boldsymbol{-}1},\boldsymbol{x}_k\right)\prod_{k,j}P\left(\boldsymbol{z}_{k,j}|\boldsymbol{x}_k,\boldsymbol{y}_j\right)
+    $$
+
+  <div style="color:red;text-align:center;">这说明我们可以独立地处理各时刻的运动和观测。</div>
+
+- 获得一个`最小二乘问题`（从 概率问题 变为 优化问题）
+
+  定义各次输入和观测数据与模型之间的误差：
+  $$
+  e_{u,k}=x_k-f\left(\boldsymbol{x}_{k-1},\boldsymbol{u}_k\right) \\
+  e_{z,j,k}=\boldsymbol{z}_{k,j}-h\left(\boldsymbol{x}_{k},\boldsymbol{y}_{j}\right),
+  $$
+
+  - **从`最大似然`出发**：
+
+    前面我们推导了：
+    $$
+    P\left(\boldsymbol{z},\boldsymbol{u}|\boldsymbol{x},\boldsymbol{y}\right)=\prod_kP\left(\boldsymbol{u}_k|\boldsymbol{x}_{k\boldsymbol{-}1},\boldsymbol{x}_k\right)\prod_{k,j}P\left(\boldsymbol{z}_{k,j}|\boldsymbol{x}_k,\boldsymbol{y}_j\right)
+    $$
+    此时我们要求 $max P$，即找到一组$(x,y)$，使观测和控制最合理
+
+  - 我们代入`高斯分布`，并取`负对数`
+
+    - 对于`控制项`：$u_k\sim\mathcal{N}(f(x_{k-1},x_k),R_k)$，所以负对数变为：
+      $$
+      e_{u,k}^TR_k^{-1}e_{u,k} \\
+      可以看出这是一个马氏距离
+      $$
+
+    - 对于`观测项`：$z_{k,j}\sim\mathcal{N}(h(x_k,y_j),Q_{k,j})$，所以负对数变为：
+      $$
+      e_{z,k,j}^TQ_{k,j}^{-1}e_{z,k,j} \\
+      可以看出这是一个马氏距离
+      $$
+
+    - 合并起来得到一个`最小二乘问题`（解等价于状态的最大似然估计）：
+      $$
+      (x^*,y^*)
+      =\arg\min_{x,y}J(x,y)
+      =\sum_ke_{u,k}^\mathrm{T}R_k^{-1}e_{u,k}+\sum_k\sum_je_{z,k,j}^\mathrm{T}Q_{k,j}^{-1}e_{z,k,j}.
+      $$
+      其中：
+
+      - $(x^*,y^*)$：找到一组最优的 轨迹$x$ 和 地图$y$
+      - $J(x,y)$：误差总和（损失函数 / 代价函数），由 运动误差$e_{u,k}$（表示你的轨迹是否符合运动模型） 和 观测误差$e_{z,k,j}$（表示你预测的观测是否接近真实观测） 组成
+
+      > 由于实际中存在噪声，我们估计的轨迹 (x) 和地图 (y) 代入运动方程与观测方程时，无法让所有关系完全成立（总会有误差）。因此，SLAM 的做法不是去“精确满足方程”，而是从一个初始估计出发，不断对 (x,y) 做小幅调整，使所有运动误差和观测误差的加权总和逐步减小，直到无法再明显降低为止。**这个不断调整、逐步降低误差并最终停在某个极小值的过程，就是一个典型的`非线性优化`过程**。
+
+  
+
+### 例子：批量状态估计
+
+现有一个非常简单的离散时间系统**（这是一个“纯状态估计模型”，不是完整的SLAM模型）**：
+$$
+\begin{aligned}x_k&=x_{k-1}+u_k+w_k,&w_k&\sim\mathcal{N}(0,Q_k)\\z_k&=x_k+n_k,&n_k&\sim\mathcal{N}(0,R_k)\end{aligned}
+$$
+这两个式子可以表达一辆沿$x$轴前进或后退的汽车。
+
+第一个公式为**运动方程**，$u_k$为传感器输入，$w_k$为噪声；
+
+第二个公式为**观测方程**，$x_k$为相机在k时刻的位姿，$z_k$为对汽车位置的测量（传感器直接测量$x_k$的位置），$n_k$为噪声。
+
+取时间$k=1,\ldots,3$，现希望根据已有的$v,y$进行状态估计。设初始状态$x_{0}$已知。下面来推导`批量(batch)状态的最大似然估计`。
+
+- 求`最大似然估计`
+
+  令 批量状态变量为$x=[x_{0},x_{1},x_{2},x_{3}]^{\mathrm{T}}$，批量观测变量为$z=[z_1,z_2,z_3]^\mathrm{T}$， 批量传感器输入为$\boldsymbol{u}=[u_1,u_2,u_3]^\mathrm{T}$
+
+  - 从`最大后验估计(MAP)`出发：$x^*=\arg\max P(x|u,z)$，
+
+    - 用贝叶斯公式得到：$P(x|u,z)=\frac{P(u,z|x)P(x)}{P(u,z)}$。
+
+      因为$P(u,z)$ 与 $x$ 无关（一个常数）
+
+      且如果假设 $x_0$ 已知 ⇒ $P(x)$ 是常数（或固定）
+
+    - 所以优化时可以忽略常数项，得到：
+      $$
+      x^*=\arg\max P(u,z|x)
+      $$
+
+  - 把`联合概率`拆开 $P(u,z|x)$
+
+    利用链式法则：$P(u,z|x)=P(u|x)\operatorname{P}(z|u,x)$
+
+    在这个系统中有两个重要的**条件独立性假设**：
+
+    - **控制量的条件独立性**
+
+      系统模型：
+      $$
+      x_k = x_{k-1} + u_k + w_k
+      $$
+      可以改写为：
+      $$
+      u_k = x_k - x_{k-1} - w_k
+      $$
+      因此：
+      $$
+      P(u_k|x) = P(u_k|x_{k-1},x_k)
+      $$
+      并且各时刻独立：
+      $$
+      P(u|x) = \prod_{k=1}^3 P(u_k|x_{k-1},x_k)
+      $$
+
+    - **观测的条件独立性**
+
+      观测模型：
+      $$
+      z_k = x_k + n_k
+      $$
+      说明：
+      $$
+      P(z_k|x) = P(z_k|x_k)
+      $$
+      且各时刻独立：
+      $$
+      P(z|x) = \prod_{k=1}^3 P(z_k|x_k)
+      $$
+
+    - **合并**
+
+      于是：
+      $$
+      P(u,z|x) = P(u|x)\,P(z|x)
+      $$
+      代入得到：
+      $$
+      P(u,z|x) =
+      \left(\prod_{k=1}^3 P(u_k|x_{k-1},x_k)\right)
+      \left(\prod_{k=1}^3 P(z_k|x_k)\right)
+      $$
+
+  - 得到最大似然估计
+    $$
+    \begin{gathered}x_{\mathrm{map}}^*=\arg\max P(x|\boldsymbol{u},\boldsymbol{z})=\arg\max P(\boldsymbol{u},\boldsymbol{z}|\boldsymbol{x})\\=\prod_{k=1}^{3}P(u_{k}|x_{k-1},x_{k})\prod_{k=1}^{3}P(z_{k}|x_{k}),\end{gathered}
+    $$
+
+    - 对于`运动方程`，我们知道：
+      $$
+      P(u_k|x_{k-1},x_k)=\mathcal{N}(x_k-x_{k-1},Q_k),
+      $$
+
+    - 对于`观测方程`，我们知道：
+      $$
+      P\left(z_k|x_k\right)=\mathcal{N}\left(x_k,R_k\right).
+      $$
+
+- 构建`误差变量`：
+  $$
+  e_{u,k}=x_k-x_{k-1}-u_k, \\
+  e_{z,k}=z_k-x_k,
+  $$
+
+- 得到`最小二乘`的目标函数：
+  $$
+  \min\sum_{k=1}^3e_{u,k}^\mathrm{T}Q_k^{-1}e_{u,k}+\sum_{k=1}^3e_{z,k}^\mathrm{T}R_k^{-1}e_{z,k}.
+  $$
+  因为这个系统是线性系统，我们可以将其写成向量形式
+
+- 对误差做打包（所有误差）
+
+  - 因为误差变量每一项都不一样，很乱，所以需要变为矩阵形式来方便计算：
+
+    - 运动误差：$e_{u,k} = x_k - x_{k-1} - u_k$
+
+    - 观测误差：$e_{z,k} = z_k - x_k$
+
+  - 统一公式写为
+    $$
+    y-Hx=e
+    $$
+
+    | 符号 | 含义                   |
+    | ---- | ---------------------- |
+    | x    | 所有状态（未知量）     |
+    | y    | 所有“观测数据”（已知） |
+    | H    | 把状态映射成观测的矩阵 |
+    | e    | 所有误差               |
+
+  - 矩阵$H$
+    $$
+    H=\begin{bmatrix}1&-1&0&0\\0&1&-1&0\\0&0&1&-1\\0&1&0&0\\0&0&1&0\\0&0&0&1\end{bmatrix}
+    $$
+
+    - 前3行：`运动模型`
+
+      例如第一行：
+      $$
+      1\cdot x_0 -1\cdot x_1 = x_0 - x_1
+      $$
+      对应：
+      $$
+      e_{u,1} = x_1 - x_0 - u_1
+      $$
+      👉 实际上：
+      $$
+      u_1 \approx x_1 - x_0
+      $$
+      所以：**前3行 = 运动约束**
+
+    - 后3行：`观测模型`
+
+      例如：
+      $$
+      0\cdot x_0 +1\cdot x_1 = x_1
+      $$
+      对应：
+      $$
+      z_1 \approx x_1
+      $$
+      👉 **后3行 = 观测约束**
+
+  - Σ 是什么？
+    $$
+    \Sigma = \text{diag}(Q_1, Q_2, Q_3, R_1, R_2, R_3)
+    $$
+    意思：
+
+    - 前3个：运动噪声
+    - 后3个：观测噪声
+
+    本质：**每一项误差的“可信度权重”**
+
+  - 问题改写为：
+    $$
+    x_{\mathrm{map}}^*=\arg\min e^\mathrm{T}\Sigma^{-1}e
+    $$
+
+- 之后我们将看到，这个问题有唯一的解：
+  $$
+  x_{\mathrm{map}}^*=(H^\mathrm{T}\Sigma^{-1}H)^{-1}H^\mathrm{T}\Sigma^{-1}y.
+  $$
+  
+
+## 非线性最小二乘
+
+- 先考虑一个简单的问题：
+  $$
+  \min_{\boldsymbol{x}}F(\boldsymbol{x})=\frac{1}{2}\|f\left(\boldsymbol{x}\right)\|^2=\frac{1}{2}f(x)^Tf(x)
+  $$
+  其中：
+
+  - $\boldsymbol{x}\in\mathbb{R}^n$：表示 $x$ 是n维的
+  - $f$是任意`标量非线性函数`（输入是一个数，输出也是一个数）$f(\boldsymbol{x}):\mathbb{R}^n\mapsto\mathbb{R}$（表示输入的$x$是n维，而输出是1维的）
+  - $f(x)$：**残差向量（vector）**
+  - $F(x)$：**目标函数（scalar）**
+  
+- 当$f$很简单时：
+
+  令目标函数的导数为0，然后求`极值`。
+
+  因为导数为0得到的极值，可能是极大值、极小值、鞍点，只需要比较这些函数值即可。
+  $$
+  \frac{\mathrm{d}F}{\mathrm{d}x}=0.
+  $$
+
+- 当$f$很复杂时：
+
+  出现一个问题：$\frac{\mathrm{d}F}{\mathrm{d}x}=0.$难求或$\frac{\mathrm{d}F}{\mathrm{d}x}=0.$难解
+
+  <span style="color:red">使用迭代方式求解</span>（从一个初始值出发，不断地更新当前的优化变量，使目标函数下降）：
+
+  1. 给定某个初始值 $x_0$
+
+  2. 对于第$k$次迭代，寻找一个`增量`$\Delta x_k$，使得$\left\|f\left(x_k+\Delta x_k\right)\right\|_2^2$达到极小值。
+
+     **（待解决的问题：这个增量$\Delta x_k$要怎么寻找呢？）**
+
+  3. 若$\Delta x_k$足够小，则停止。
+
+  4. 否则，令$x_{k+1}=x_k+\Delta x_k$，返回第2步。
+
+  **总结迭代方法**：让求解导数为零的问题，变成了一个不断寻找增量使函数值不断下降的过程。直到某个时刻增量非常小，无法使函数下降，则算法收敛，目标达到了一个极小，也就完成寻找极小值的过程。
+
+  
+
+### 一阶梯度和二阶梯度法
+
+现在考虑第$k$次迭代，假设我们在$x_k$处，想要寻到增量$\Delta x_k$**（注意$x$是n维的）**，那么最直观的方式是将目标函数在$x_k$附近进行`泰勒展开`：
+$$
+F(x_{k}+\Delta x_{k})\approx F(x_{k})+J\left(x_{k}\right)^{\mathrm{T}}\Delta x_{k}+\frac{1}{2}\Delta x_{k}^{\mathrm{T}}H(x_{k})\Delta x_{k}.
+$$
+其中：
+
+- $\Delta x_k$：增量
+
+- $J(x) =
+  \begin{bmatrix}
+  \frac{\partial F}{\partial x_1} \\
+  \frac{\partial F}{\partial x_2} \\
+  \frac{\partial F}{\partial x_3}
+  \end{bmatrix}$，是$F(x)$关于$x$的**一阶导数**（也叫`梯度`、`雅可比矩阵`）
+- $H(x)=\begin{bmatrix}\frac{\partial^2F}{\partial x_1^2}&\frac{\partial^2F}{\partial x_1\partial x_2}&\cdots\\\frac{\partial^2F}{\partial x_2\partial x_1}&\frac{\partial^2F}{\partial x_2^2}&\cdots\\\vdots&\vdots&\ddots\end{bmatrix}$，是$F(x)$关于$x$的**二阶导数**（也叫`海塞矩阵`）
+
+
+
+### 只保留一阶梯度：最速下降法
+
+> `最速下降法`：对目标函数做了一阶近似，把一个非线性函数f线性化成了**一次函数**，这种近似自然是极其不精确的。
+
+$$
+F(x_{k}+\Delta x_{k})\approx F(x_{k})+J\left(x_{k}\right)^{\mathrm{T}}\Delta x_{k}
+$$
+
+**🤔 $\Delta x_{k}$ 取什么值的时候 $F(x)$ 下降最快呢？**
+
+- 先说结论：$\Delta x_{k}=-J(x_k)$ 时 $F(x)$ 下降最快，即 $\Delta x^*=-J(x_k).$。
+
+- <span style="color:red">推导</span>：
+
+  - 设：
+    $$
+    \Delta x_k = \lambda P_k
+    $$
+    其中：
+
+    - $\lambda > 0$：步长（走多远）
+    - $P_k$：单位方向向量（$\|P_k\|=1$）
+
+  - 我们将$f(x)$在$x_k$处做一阶泰勒展开：
+    $$
+    f(x) = f(x_k) + f'(x_k)^T (x - x_k) \\
+    f(x) - f(x_k) = f'(x_k)^T (x - x_k) \\
+    令x=x_{k+1}代入 \\
+    f(x_{k+1}) - f(x_k)= f'(x_k)^T (x_{k+1} - x_k) \\
+    代入x_{k+1}=x_k+\lambda P_k \\
+    f(x_{k+1})-f(x_k)=f^{\prime}(x_k)^T(x_k+\lambda P_k-x_k) \\
+    f(x_{k+1})-f(x_k)=f^{\prime}(x_k)^T\lambda P_k
+    $$
+
+  - 我们如果想要求`最小值`，那 $f(x_{k+1})-f(x_k)$ 一定要小于0。同理 $f'(x_k)^T \lambda P_k$ 也小于0。
+
+    因为 $f'(x_k)^T P_k$ 是两个向量相乘，所以：
+    $$
+    f^{\prime}(x_k)^TP_k=\|f^{\prime}(x_k)\|\|P_k\|\cos\theta
+    $$
+    其中：
+
+    - $\theta$：是向量$f'(x_k)^T$与向量$P_k$得夹角
+
+    由于：
+
+    - $\|P_k\| = 1$
+
+    所以：
+    $$
+    f^{\prime}(x_k)^TP_k=\|P_k\|\cos\theta
+    $$
+
+  - 那么很显然，当 $\theta$ 为 180° 时，即向量$f'(x_k)^T$与向量$P_k$的夹角是180°时，目标函数是下降得最快的。
+
+    这是因为当向量$f'(x_k)^T$与向量$P_k$得夹角是180°时，表明向量$f'(x_k)^T$与向量$P_k$**在同一条直线上**，并且**方向相反**。
+
+    所以得到 $P_k=-f^{\prime}(x_k)$， 即 $P_k=-\frac{J(x_k)}{\|J(x_k)\|}$
+
+  - <span style="color:red">证明得：负梯度方向是下降最快的方向</span>
+
+
+
+最速下降法的理解：
+
+![无标题](./assets/无标题-1774084054136-1.png)
+
+
+
+### 二阶梯度法：牛顿法
+
+> `牛顿法`：仅依赖于目标函数的二阶导，在很多情况下是不现实的
+
+- **我们从二阶泰勒展开式开始推导**：
+  $$
+  F(x_{k}+\Delta x_{k})\approx F(x_{k})+J\left(x_{k}\right)^{\mathrm{T}}\Delta x_{k}+\frac{1}{2}\Delta x_{k}^{\mathrm{T}}H(x_{k})\Delta x_{k}.
+  $$
+  其中：
+
+  - $F(x)$：目标函数（标量）
+
+  - $J(x)=\nabla F(x)$：梯度（列向量）
+
+  - $H(x)=\nabla^2 F(x)$：Hessian（矩阵）
+  - $\Delta x_k$：我们要找的**增量（step）**
+
+- **目标：找到一个最优的增量 $\Delta x_k$**
+
+  我们当前在点：$x_k$，我们希望找到一个 小步长$\Delta x_{k}$ ，使得 函数值$F(x_k+\Delta x_k)$ 尽量小。
+
+  但是这个函数很复杂，我们不好直接最小化，所以我们**使用 二阶泰勒展开 来近似它**，即上面的这个二阶泰勒展开式
+  $$
+  使得F(x_k+\Delta x_k)\approx\text{一个二次函数}
+  $$
+  而且**二次函数可以直接求最小值**
+
+- **把问题变成一个`二次优化问题`**
+
+  我们定义：
+  $$
+  \phi(\Delta x_k)=F(x_k)+J(x_k)^T\Delta x_k+\frac{1}{2}\Delta x_k^TH(x_k)\Delta x_k
+  $$
+  注意到，因为$F(x_k)$是一个常数，对`最小化`没有影响，所以我们把这个项去除：
+  $$
+  \phi(\Delta x_k)=J(x_k)^T\Delta x_k+\frac{1}{2}\Delta x_k^TH(x_k)\Delta x_k
+  $$
+
+- **关键步骤：对$\Delta x_{k}$求导**
+
+  因为我们是要求 $\phi(\Delta x_k)$ 的`最小值`，又因为该函数是一个`二次函数`，所以我们要求该函数的`极值`，所以：
+  $$
+  \frac{\partial\phi}{\partial\Delta x_k}=0
+  $$
+  现在我们要逐项求导：
+
+  - **第一项**：$J(x_k)^T\Delta x_k$
+
+    其中：
+
+    - $J(x_k)^T$：常数向量，表示梯度
+    - $\Delta x_k$：变量向量
+
+    所以导数为： $J(x_k)$
+
+  - **第二项**：$\frac{1}{2}\Delta x_k^TH(x_k)\Delta x_k$
+
+    这是一个`二次型`
+
+    有一个非常重要的公式：
+
+    如果：
+    $$
+    f(x)
+    =
+    \frac12 x^T H x
+    $$
+    那么：
+    $$
+    \nabla f(x)
+    =
+    H x
+    $$
+    （当 H 是对称矩阵，Hessian 一定是对称的）
+
+    所以：
+    $$
+    \frac{\partial}{\partial \Delta x_k}
+    \left(
+    \frac12
+    \Delta x_k^T
+    H(x_k)
+    \Delta x_k
+    \right)
+    =
+    H(x_k)
+    \Delta x_k
+    $$
+
+  - 把这两项导数加起来：
+    $$
+    J(x_k)+H(x_k)\Delta x_k=0
+    $$
+
+- **解求导后的方程**
+
+  我们要解：
+  $$
+  J(x_k)+H(x_k)\Delta x_k=0 \\
+  转换为 \\
+  H(x_k)\Delta x_k=-J(x_k)
+  $$
+  两边同时乘 $H(x_k)^{-1}$ ，得到：
+  $$
+  \Delta x_k=-H(x_k)^{-1}J(x_k)
+  $$
+
+- **然后我们得到了`牛顿法的核心公式`**
+
+  上式代入：
+  $$
+  x_{k+1}=x_k+\Delta x_k
+  $$
+  得到`牛顿迭代公式`：
+  $$
+  \boxed{x_{k+1}=x_k-H(x_k)^{-1}\nabla F(x_k)}
+  $$
+  因为牛顿法使用了`海塞矩阵（Hessian）`，
+
+  > `海塞矩阵`：
+  >
+  > - 它知道：梯度方向、曲率（弯曲程度），所以可以 <span style="color:red">一步跳到最小值</span>
+  >
+  >   **（这就代表了如果函数是 严格二次函数 ，那么 一次就收敛）**
+  >
+  > - 但是有一个问题：在问题规模较大时非常困难，我们通常倾向于避免$H$的计算。
+
+
+
+### 高斯牛顿法
+
+> `高斯牛顿法`的思想：将`残差向量`$f(x)$进行一阶的泰勒展开
+
+> [!NOTE]
+>
+> `最速下降法`和`牛顿法`虽然直观，但实用中存在一些缺点
+>
+> - 最速下降法过于贪婪，容易走出锯齿路线，增加迭代次数
+> - 牛顿法迭代次数少，但是需要计算复杂的H矩阵，并且H不一定是正定矩阵
+
+- 因为我们要求解的原始问题是：
+  $$
+  \min_{\boldsymbol{x}}F(\boldsymbol{x})=\frac{1}{2}\|f\left(\boldsymbol{x}\right)\|^2=\frac{1}{2}f(x)^Tf(x)
+  $$
+
+- 现在我们设：
+  $$
+  x=x_k+\Delta x
+  $$
+
+- 代入原式得：
+  $$
+  F(x_k+\Delta x)=\frac{1}{2}\|f(x_k+\Delta x)\|^2=\frac{1}{2}f(x_k+\Delta x)^Tf(x_k+\Delta x)
+  $$
+
+- 🤔怎么计算$f(x_k+\Delta x)$？使用`泰勒展开近似`
+
+  - 我们在 $x_k$ 附近求`泰勒展开`：
+    $$
+    f(x_k+\Delta x)\approx f(x_k)+J(x_k)\Delta x
+    $$
+    其中：
+
+    + $J(x_k)=\frac{\partial f}{\partial x}$ 是`雅可比矩阵`
+
+  - 然后我们把泰勒展开式代回原式，得到：
+    $$
+    F(x_k+\Delta x)\approx\frac{1}{2}\|f(x_k)+J(x_k)\Delta x\|^2
+    $$
+
+- 然后我们展开这个平方：
+  $$
+  \frac{1}{2}\|f(x_k)+J(x_k)\Delta x\|^2=\frac{1}{2}(f(x_k)+J(x_k)\Delta x)^T(f(x_k)+J(x_k)\Delta x)=\frac{1}{2}\left[f(x_k)^Tf(x_k)+2f(x_k)^TJ(x_k)\Delta x+\Delta x^TJ(x_k)^TJ(x_k)\Delta x\right]
+  $$
+
+- 然后我们对$\Delta x$求导并令其为0
+
+  - 最小值条件：
+    $$
+    \frac{\partial}{\partial\Delta x}=0
+    $$
+
+  - 逐项求导：
+    - 第一项：$f_k^Tf_k$是常数，求导为0
+    - 第二项：$f_k^TJ_k\Delta x$，导数为$J_k^Tf_k$
+    - 第三项：$\frac{1}{2}\Delta x^{T}J_{k}^{T}J_{k}\Delta x$，导数为$J_k^TJ_k\Delta x$
+
+  - 合并求导项：
+    $$
+    J_k^Tf_k+J_k^TJ_k\Delta x=0
+    $$
+    整理得`高斯牛顿方程`：
+    $$
+    \boxed{J_k^TJ_k\Delta x=-J_k^Tf_k}
+    $$
+
+- 解出步长$\Delta x$
+
+  理论上：
+  $$
+  \boxed{
+  \Delta x
+  =
+  -
+  (
+  J_k^T
+  J_k
+  )^{-1}
+  J_k^T
+  f_k
+  }
+  $$
+  但实际工程中：
+
+  不会求逆，而是：
+  $$
+  \boxed{\text{解线性方程}} \\
+  J_k^TJ_k\Delta x=-J_k^Tf_k
+  $$
+
+- 更新参数
+
+  这是所有迭代法的统一形式：
+  $$
+  \boxed{
+  x_{k+1}
+  =
+  x_k
+  +
+  \Delta x
+  }
+  $$
+  所以得到`高斯-牛顿迭代公式`：
+  $$
+  \boxed{
+  x_{k+1}
+  =
+  x_k
+  -
+  (
+  J_k^T
+  J_k
+  )^{-1}
+  J_k^T
+  f_k
+  }
+  $$
+
+
+
+### 列文伯格—马夸尔特方法（阻尼牛顿法）
+
+> `列文伯格—马夸尔特方法`：高斯牛顿法中采用的近似二阶泰勒展开只能在展开点附近有较好的近似效果，所以我们很自然地想到应该给 $\Delta\boldsymbol{x}$ 添加一个范围，称为`信赖区域（Trust Region）`。这个范围定义了在什么情况下二阶近似是有效的，这类方法也称为`信赖区域方法（Trust Region Method）`。在信赖区域里边，我们认为近似是有效的；出了这个区域，近似可能会出问题。
+
+- 🤔如何确定**信赖区域的范围**呢？
+
+  - 一个比较好的方法是根据我们的近似模型跟实际函数之间的差异来确定：
+
+    如果差异小，说明近似效果好，我们扩大近似的范围；
+
+    如果差异大，就缩小近似的范围。
+
+  - 我们定义一个指标 *ρ* 来**刻画近似的好坏程度**：
+    $$
+    \rho=\frac{f\left(\boldsymbol{x}+\Delta\boldsymbol{x}\right)-f\left(\boldsymbol{x}\right)}{\boldsymbol{J}\left(\boldsymbol{x}\right)^\mathrm{T}\Delta\boldsymbol{x}}.
+    $$
+    其中：
+
+    - 分子：**实际函数**下降的值
+    - 分母：**近似模型**下降的值
+
+    $\rho$的三种情况：
+
+    - 如果 $\rho$ 接近于 1，则近似是好的。
+    - 如果 $\rho$ 太小，说明实际减小的值远少于近似减小的值，则认为**近似比较差，需要缩小近似范围**。
+    - 如果 $\rho$ 比较大，则说明实际下降的比预计的更大，我们可以**放大近似范围**。
+
+- 我们回到原始问题：
+  $$
+  \min_{\boldsymbol{x}}F(\boldsymbol{x})=\frac{1}{2}\|f\left(\boldsymbol{x}\right)\|^2=\frac{1}{2}f(x)^Tf(x)
+  $$
+
+  > 我们构建一个改良版的非线性优化框架，该框架会比高斯牛顿法有更好的效果：
+  >
+  > 1. **人为给定初始值$x_0$，以及初始优化半径$\mu$**
+  >
+  > 2. 对于第$k$次迭代，在高斯牛顿法的基础上加上信赖区域，求解：
+  >    $$
+  >    \min_{\Delta\boldsymbol{x}_k}\frac12\Big\|f\left(\boldsymbol{x}_k\right)+\boldsymbol{J}\left(\boldsymbol{x}_k\right)^\mathrm{T}\Delta\boldsymbol{x}_k\Big\|^2,\quad\mathrm{s.t.}\quad\left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|^2\leqslant\mu
+  >    $$
+  >    其中
+  >
+  >    - $\mu$：信赖区域的半径，这就把信赖区域变成一个球。
+  >
+  >    - $D$：系数矩阵，因为有$\mu$的存在，所以信赖区域就变成了一个椭球
+  >
+  >      `列文伯克`提出的优化方法中，$D$取单位矩阵$I$，相当于把$\Delta\boldsymbol{x}_k$约束在一个球中**（也就是说所有变量允许的步长一样大。但问题是在现实中，不同变量对误差的影响差别非常大，也就是说不同维度“敏感度”不同。所以$D$取单位矩阵$I$其实并不合理）**
+  >
+  >      `马夸尔特`提出的优化方法中，$D$取**非负数对角矩阵（主对角线之外的元素全为0的方阵）**（实际中通常用$J^TJ$的对角元素平方根，即$D=\operatorname{diag}\left(\sqrt{(J^TJ)_{11}},\ldots,\sqrt{(J^TJ)_{nn}}\right)=\begin{bmatrix}\sqrt{(J^TJ)_{11}}&0&0&\cdots&0\\0&\sqrt{(J^TJ)_{22}}&0&\cdots&0\\0&0&\sqrt{(J^TJ)_{33}}&\cdots&0\\\vdots&\vdots&\vdots&\ddots&\vdots\\0&0&0&\cdots&\sqrt{(J^TJ)_{nn}}\end{bmatrix}$，使得在梯度小的维度上约束范围更大一些，这就解决了`列文伯克`提出的方式的问题）
+  >
+  > 3. 按式子 $\rho=\frac{f\left(\boldsymbol{x}+\Delta\boldsymbol{x}\right)-f\left(\boldsymbol{x}\right)}{\boldsymbol{J}\left(\boldsymbol{x}\right)^\mathrm{T}\Delta\boldsymbol{x}}$ 计算 $\rho$
+  >
+  > 4. 若 $\rho>\frac34$ （阈值是一个经验值），则设置 $\mu=2\mu$（这个近似范围扩大的倍数是一个经验值）
+  >
+  >   这里表示 该模型非常可靠，可以**扩大信任域**
+  >
+  > 5. 若 $\rho<\frac14$ （阈值是一个经验值），则设置 $\mu=0.5\mu$（这个近似范围缩小的倍数是一个经验值）
+  >
+  >   这里表示 模型很差，需要**缩小信任域**
+  >
+  > 6. 如果 $\rho$ 大于 某阈值($\mathrm{\eta}$，是否接受步长)，则认为`近似可行（注意：这里表达的是“至少不坏”，而不是“很好”）`。令 $x_{k+1}=x_k+\Delta x_k$ 
+  >
+  >   这是一个`迭代`的过程，如果 $\rho>\mathrm{\eta}$ 则接受**步长$\Delta\boldsymbol{x}_{k}$**，然后就更新$x_k$。否则**步长$\Delta\boldsymbol{x}_{k}$**被拒绝，不更新$x_k$。算法继续迭代...（即第7步）
+  >
+  > 7. 判断算法是否收敛。如不收敛则返回 第2步，否则结束。
+
+- 无论如何，我们都需要解这个子问题来获得`梯度`：
+  $$
+  \min_{\Delta\boldsymbol{x}_k}\frac12\Big\|f\left(\boldsymbol{x}_k\right)+\boldsymbol{J}\left(\boldsymbol{x}_k\right)^\mathrm{T}\Delta\boldsymbol{x}_k\Big\|^2,
+  \quad\mathrm{s.t.}\quad
+  \left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|^2\leqslant\mu
+  $$
+  这个子问题是**带不等式约束**的**优化问题**，我们用 **拉格朗日乘子$\lambda$** 把约束项放到目标函数中，构成`拉格朗日函数`
+
+  - **明确问题中的`目标函数`和`约束条件`，以构造`拉格朗日函数`**
+    - 约束条件：$\left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|^2\leqslant\mu$，拉格朗日方法要求约束写成：$\left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|^2-\mu\leq0$
+    - 目标函数：$\frac12\Big\|f\left(\boldsymbol{x}_k\right)+\boldsymbol{J}\left(\boldsymbol{x}_k\right)^\mathrm{T}\Delta\boldsymbol{x}_k\Big\|^2$
+    - 构造拉格朗日函数：$L(\Delta\boldsymbol{x}_k,\lambda)=\frac12{\left\|f\left(\boldsymbol{x}_k\right)+\boldsymbol{J}\left(\boldsymbol{x}_k\right)^\mathrm{T}\Delta\boldsymbol{x}_k\right\|}^2+\lambda\left({\left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|}^2-\mu\right)$
+
+  - 解方程组$\begin{cases}L_{\Delta x}=0\\L_{\lambda}=0&\end{cases}$
+
+    - 计算$L_{\Delta x}=0$，即$L(\Delta\boldsymbol{x}_k,\lambda)=\frac12{\left\|f\left(\boldsymbol{x}_k\right)+\boldsymbol{J}\left(\boldsymbol{x}_k\right)^\mathrm{T}\Delta\boldsymbol{x}_k\right\|}^2+\lambda\left({\left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|}^2-\mu\right)$对$\Delta\boldsymbol{x}_{k}$求导
+
+      - 对**第一项** $\frac{1}{2}\|f(\boldsymbol{x}_k)+\boldsymbol{J}(\boldsymbol{x}_k)^T\Delta\boldsymbol{x}_k\|^2$
+
+        用一个标准公式：
+        $$
+        \nabla_x
+        \frac12
+        \|a+Bx\|^2
+        =
+        B
+        (
+        a+Bx
+        )
+        $$
+        这里：
+        $$
+        a=f(\boldsymbol{x}_k) \\
+        B=\boldsymbol{J}(\boldsymbol{x}_k)
+        $$
+        所以求导得：
+        $$
+        \boldsymbol{J}(\boldsymbol{x}_k)
+        \left(
+        f(\boldsymbol{x}_k)
+        +
+        \boldsymbol{J}(\boldsymbol{x}_k)^T
+        \Delta\boldsymbol{x}_k
+        \right)
+        $$
+
+      - 对**第二项** $\lambda\left(\left\|D\Delta\boldsymbol{x}_k\right\|^2-\mu\right)$
+
+        改写这个式子：
+        $$
+        \lambda\left(\left\|D\Delta\boldsymbol{x}_k\right\|^2-\mu\right)
+        =\lambda\left\|D\Delta\boldsymbol{x}_k\right\|^2 - \lambda\mu \\ 
+        =\lambda(\boldsymbol{D}\Delta\boldsymbol{x}_k)^T(\boldsymbol{D}\Delta\boldsymbol{x}_k) - \lambda\mu
+        $$
+
+        - 对 $\lambda(\boldsymbol{D}\Delta\boldsymbol{x}_k)^T(\boldsymbol{D}\Delta\boldsymbol{x}_k)$ 求导：
+
+          因为一个重要公式：
+          $$
+          \nabla_x(x^TAx)=2Ax\quad\text{(A 对称)}
+          $$
+          代入得求导后：
+          $$
+          2\lambda\boldsymbol{D}^T\boldsymbol{D}\Delta\boldsymbol{x}_k
+          $$
+
+        - 对 $\lambda\mu$ 求导：为0
+
+      - **合并两个求导项**：
+        $$
+        \begin{aligned}\boldsymbol{J}(\boldsymbol{x}_k)\left(f(\boldsymbol{x}_k)+\boldsymbol{J}(\boldsymbol{x}_k)^T\Delta\boldsymbol{x}_k\right)+2\lambda\boldsymbol{D}^T\boldsymbol{D}\Delta\boldsymbol{x}_k&=0\\(\boldsymbol{x}_k)f(\boldsymbol{x}_k)+\boldsymbol{J}(\boldsymbol{x}_k)\boldsymbol{J}(\boldsymbol{x}_k)^T\Delta\boldsymbol{x}_k+2\lambda\boldsymbol{D}^T\boldsymbol{D}\Delta\boldsymbol{x}_k&=0\\\left(\boldsymbol{J}(\boldsymbol{x}_k)\boldsymbol{J}(\boldsymbol{x}_k)^T+2\lambda\boldsymbol{D}^T\boldsymbol{D}\right)\Delta\boldsymbol{x}_k&=-\boldsymbol{J}(\boldsymbol{x}_k)f(\boldsymbol{x}_k)\end{aligned}
+        $$
+
+    - 计算$L_{\lambda}=0$，即$L(\Delta\boldsymbol{x}_k,\lambda)=\frac12{\left\|f\left(\boldsymbol{x}_k\right)+\boldsymbol{J}\left(\boldsymbol{x}_k\right)^\mathrm{T}\Delta\boldsymbol{x}_k\right\|}^2+\lambda\left({\left\|\boldsymbol{D}\Delta\boldsymbol{x}_k\right\|}^2-\mu\right)$对$\lambda$求导
+
+      - 对**第一项** $\frac{1}{2}\|f(\boldsymbol{x}_k)+\boldsymbol{J}(\boldsymbol{x}_k)^T\Delta\boldsymbol{x}_k\|^2$，求得为0
+      - 对**第二项** $\lambda\left(\left\|D\Delta\boldsymbol{x}_k\right\|^2-\mu\right)$，求得为$\|\boldsymbol{D}\Delta\boldsymbol{x}_k\|^2=\mu$
+
+    - 得到`核心方程组`：
+      $$
+      \boxed{\begin{cases}\left(\boldsymbol{J}(x_k)\boldsymbol{J}(x_k)^{T}+2\lambda\boldsymbol{D}^{T}\boldsymbol{D}\right)\Delta\boldsymbol{x}_{k}=-\boldsymbol{J}(x_k)f(\boldsymbol{x}_{k})\\\\\|\boldsymbol{D}\Delta\boldsymbol{x}_{k}\|^{2}=\mu&&&\end{cases}}
+      $$
+      其中：
+
+      - 第一个方程是 **stationarity 条件**（梯度为零）
+      - 第二个方程是 **约束激活条件**（互补条件）
+
+    - **解开这个`核心方程组`的思路**：
+
+      这个方程组是**线性方程 + 非线性方程耦合**（因为 $\lambda$ 乘在 $D^TD$ 上，影响 $\Delta\boldsymbol{x}_{k}$ 的解，所以第二个方程实际上是关于 $\lambda$ 的非线性方程）。
+
+      一般求解方法：
+
+      1. **给定 $\lambda$**，解线性方程求 $\Delta\boldsymbol{x}_{k}$：
+         $$
+         (\boldsymbol{J}\boldsymbol{J}^\mathrm{T} + 2\lambda \boldsymbol{D}^\mathrm{T}\boldsymbol{D}) \,\Delta \boldsymbol{x}_k = -\boldsymbol{J} f(\boldsymbol{x}_k)
+         $$
+
+      2. **检查信赖域约束**：
+         $$
+         \|\boldsymbol{D}\Delta \boldsymbol{x}_k\|^2 \stackrel{?}{=} \mu
+         $$
+
+      3. 如果不满足，再**调整 λ**（通常增大 λ 缩小步长，减小 λ 放大步长），重复 1-2 步，直到满足约束。
+
+      直观理解：
+
+      - λ = 0 → Δx 是普通高斯牛顿步**（约束可能未激活）**
+      - λ 越大，Δx 越小，步长被控制在信赖域内，不会跳出安全区域。
+      - λ 控制 **步长大小**，保证 Δx 在球面（或椭圆）$\|\boldsymbol{D}\Delta x\|^2 = \mu$ 上
