@@ -772,7 +772,7 @@
     >
     >   ```
     >   真实世界系 w
-    >                   
+    >                                                   
     >           z
     >           ↑
     >           |
@@ -784,7 +784,7 @@
     >
     >   ```
     >   摄动坐标系 w'
-    >                   
+    >                                                   
     >           z'
     >           ↑
     >           |
@@ -1025,9 +1025,12 @@
   
 - 代入 $\delta\mathbf{q}\approx1+\frac{1}{2}\delta\boldsymbol{\theta}^w==1+\frac{1}{2}[\mathbf{i}^w\quad\mathbf{j}^w\quad\mathbf{k}^w]\begin{bmatrix}\delta\theta_x\\\delta\theta_y\\\delta\theta_z\end{bmatrix}$，并且忽略高阶小量，得到
   $$
+  \begin{equation}
+  \label{Linear approximation of infinitesimal rotation matrices}
   \mathbf{R}_{w^{\prime}}^{w}\approx\begin{bmatrix}1&-\delta\theta_{z}&\delta\theta_{y}\\\delta\theta_{z}&1&-\delta\theta_{x}\\-\delta\theta_{y}&\delta\theta_{x}&1\end{bmatrix}=\mathbf{I}+[\delta\boldsymbol{\theta}^{w}\times]
+  \end{equation}
   $$
-
+  
 - 推导出 $\mathbf{R}_w^{\boldsymbol{w}\prime}$ 的近似表达：
   $$
   \begin{equation}
@@ -1154,10 +1157,19 @@
 
   $\mathbf{b}_g$和$\mathbf{b}_a$满足`随机游走`（bias（偏置）不是常数，而是在“随机地慢慢变化”）：
   $$
-  \dot{\mathbf{b}}_g=\mathbf{n}_{wg} \\
-  \dot{\mathbf{b}}_a=\mathbf{n}_{wa}
+  \begin{equation}
+  \label{b_g_}
+  \dot{\mathbf{b}}_g=\mathbf{n}_{wg}
+  \end{equation}
   $$
-
+  
+  $$
+  \begin{equation}
+  \label{b_a_}
+  \dot{\mathbf{b}}_a=\mathbf{n}_{wa}
+  \end{equation}
+  $$
+  
   其中：
   
   - 意义：<span style="color:red">bias的变化率 = 白噪声</span>，也就是说**bias 是一个随机游走（Random Walk）过程**
@@ -1373,7 +1385,10 @@
 
   （根据`加速度计测量模型` $\begin{gathered}\mathbf{f}_m^b=\mathbf{a}^b-\mathbf{R}_w^b\cdot\mathbf{g}^w+\mathbf{b}_a+\mathbf{n}_a\\=\mathbf{R}_w^b\cdot(\mathbf{a}^w-\mathbf{g}^w)+\mathbf{b}_a+\mathbf{n}_a\end{gathered}$ 得到）
   $$
+  \begin{equation}
+  \label{IMU kinematic equations}
   \mathbf{\dot{v}}^w=\mathbf{a}^w=\mathbf{R}_b^w\cdot(\mathbf{f}_m^b-\mathbf{b}_a-\mathbf{n}_a)+\mathbf{g}^w
+  \end{equation}
   $$
   其中：
 
@@ -1408,17 +1423,20 @@
 
 - 载体速度 `估计值`$\hat{\mathrm{v}}^w$ 的`微分方程`为
   $$
+  \begin{equation}
+  \label{Differential equation for the estimated carrier velocity}
   \mathbf{\dot{\hat{v}}}^w=\mathbf{\hat{a}}^w=\mathbf{R}_b^{w^{\prime}}\cdot\left(\mathbf{f}_m^b-\mathbf{\hat{b}}_a\right)+\mathbf{g}^w
+  \end{equation}
   $$
   解释公式：
-
+  
   - 因为`真实系统`的速度微分方程为：
     $$
     \dot{\mathbf{v}}^w=\mathbf{R}_b^w(\mathbf{f}_m^b-\mathbf{b}_a-\mathbf{n}_a)+\mathbf{g}^w
     $$
-
+  
   - 现在进入 ESKF：`名义系统（估计系统）`
-
+  
     > [!NOTE]
     >
     > `名义状态`
@@ -1437,27 +1455,27 @@
     >
     > 1. 真实量 变为 估计量
     > 2. 噪声 变为 0
-
+  
   - 我们对`真实方程`进行逐项替换
     $$
     \dot{\mathbf{v}}^w=\mathbf{R}_b^w(\mathbf{f}_m^b-\mathbf{b}_a-\mathbf{n}_a)+\mathbf{g}^w
     $$
-
+  
     1. 真实量 变为 估计量
-
+  
        - 真实速度 变为 估计速度 $\dot{\mathbf{v}}^w \rightarrow \dot{\hat{\mathbf{v}}}^w$
        - 真实姿态 变为 估计姿态 $\mathbf{R}_{b}^{w}\to\mathbf{R}_{b}^{w^{\prime}}$
        - 真实bias 变为 估计bias $\mathbf{b}_a\to\hat{\mathbf{b}}_a$
-
+  
     2. 噪声变为0
-
+  
        即 $\mathbf{n}_a=0$
     
     所以我们得到 **载体速度的估计值$\mathrm{\hat{v}}$** 的微分方程为：
     $$
     \dot{\mathbf{\hat{v}}}^w=\mathbf{\hat{a}}^w=\mathbf{R}_b^{w^{\prime}}\cdot\left(\mathbf{f}_m-\mathbf{\hat{b}}_a\right)+\mathbf{g}^w
     $$
-
+  
 - 我们将 $\dot{\mathbf{v}}^w=\mathbf{R}_b^w(\mathbf{f}_m^b-\mathbf{b}_a-\mathbf{n}_a)+\mathbf{g}^w$ 与 $\dot{\mathbf{\hat{v}}}^w=\mathbf{\hat{a}}^w=\mathbf{R}_b^{w^{\prime}}\cdot\left(\mathbf{f}_m-\mathbf{\hat{b}}_a\right)+\mathbf{g}^w$ 作差，得到$\delta\mathbf{v}$的微分方程为
   $$
   \begin{aligned}&\delta\dot{\mathbf{v}}=\dot{\mathbf{v}}-\dot{\mathbf{\hat{v}}}\\&=\mathbf{R}_{b}^{w}\cdot(\mathbf{f}_{m}-\mathbf{b}_{a}-\mathbf{n}_{a})-\mathbf{R}_{b}^{w^{\prime}}\cdot\left(\mathbf{f}_{m}-\mathbf{\hat{b}}_{a}\right)\\&=\mathbf{R}_{w^{\prime}}^w\cdot\mathbf{R}_b^{w^{\prime}}\cdot\left(\mathbf{f}_m-\mathbf{\hat{b}}_a-\delta\mathbf{b}_a-\mathbf{n}_a\right)-\mathbf{R}_b^{w^{\prime}}\cdot\left(\mathbf{f}_m-\mathbf{\hat{b}}_a\right)\end{aligned}
@@ -1519,7 +1537,7 @@ $$
 $$
 \dot{\hat{\mathbf{p}}}=\hat{\mathbf{v}}
 $$
-将 上面两式 作差，得到 $\delta p$的微分方程为：
+将 上面两式 作差，得到 $\delta p$的`微分方程`为：
 $$
 \begin{equation}
 \label{Error_carrier_position}
@@ -1697,7 +1715,7 @@ $$
 
 ### $\delta\boldsymbol{\theta}_{\boldsymbol{l}+1|\boldsymbol{l}}$ 的状态转移方程
 
-- 对式$\eqref{Attitude error state update equation}$等式两边同时对 时间$t_l$ 求`微分`，有
+- 对式$\eqref{Attitude error state update equation}$等式两边同时对 `时间`$t_l$ 求`微分`，有
   $$
   \mathbf{\dot{R}}_{w,l|l}^{b}=\mathbf{\dot{R}}_{w',l|l}^{b}-\mathbf{\dot{R}}_{w',l|l}^{b}\cdot\begin{bmatrix}\delta\boldsymbol{\theta}_{l|l}\times\end{bmatrix}-\mathbf{R}_{w',l|l}^{b}\cdot\begin{bmatrix}\delta\boldsymbol{\dot{\theta}}_{l|l}\times\end{bmatrix}
   $$
@@ -1705,32 +1723,918 @@ $$
 - 将式$\eqref{Kinematic Differential Equations}$代入上式，有
   $$
   \begin{equation}
-  \label{}
-  \begin{aligned}-\begin{bmatrix}\boldsymbol{\omega}_{wb,l}^b\times\end{bmatrix}\cdot\mathbf{R}_{w,l|l}^b=&-\left[\hat{\boldsymbol{\omega}}_{wb,l}^{b}\times\right]\cdot\mathbf{\hat{R}}_{w,l|l}^{b}\\&+\left[\hat{\boldsymbol{\omega}}_{wb,l}^b\times\right]\cdot\mathbf{\hat{R}}_{w,l|l}^b\cdot\left[\delta\boldsymbol{\theta}_{l|l}^b\times\right]\\&-\mathbf{\hat{R}}_{w,l|l}^b\cdot\left[\delta\dot{\boldsymbol{\theta}}_{l|l}^b\times\right]\end{aligned}
+  \label{First-order linearization formula of attitude error dynamics}
+  \begin{aligned}-\begin{bmatrix}\boldsymbol{\omega}_{wb,l}^b\times\end{bmatrix}\cdot\mathbf{R}_{w,l|l}^b=&-\left[\hat{\boldsymbol{\omega}}_{wb,l}^{b}\times\right]\cdot\mathbf{{R}}_{w',l|l}^{b}\\&+\left[\hat{\boldsymbol{\omega}}_{wb,l}^b\times\right]\cdot\mathbf{{R}}_{w',l|l}^b\cdot\left[\delta\boldsymbol{\theta}_{l|l}^b\times\right]\\&-\mathbf{{R}}_{w',l|l}^b\cdot\left[\delta\dot{\boldsymbol{\theta}}_{l|l}^b\times\right]\end{aligned}
   \end{equation}
   $$
-  
-- 根据式$\eqref{Differential equations for attitude quaternion estimates}$，可以定义
+
+- 根据式$\eqref{Differential equations for attitude quaternion estimates}$，可以定义`角速度误差（真值相对于估计值的偏差）`：
   $$
-  \delta\boldsymbol{\omega}_l=\boldsymbol{\omega}_l-\hat{\boldsymbol{\omega}}_l
+  \delta\boldsymbol{\omega}_l^b=\boldsymbol{\omega}_{wb,l}^b-\hat{\boldsymbol{\omega}}_{w^{\prime}b,l}^b
   $$
 
-  - 因为陀螺模型 $\boldsymbol{\omega}_m=\boldsymbol{\omega}_l+\mathbf{b}_g+\mathbf{n}_g$，
+  **已知物理模型**：
 
-    陀螺估计模型 $\hat{\boldsymbol{\omega}}=\boldsymbol{\omega}_m-\hat{\mathbf{b}}_g$，
+  - 陀螺仪测量模型：$\boldsymbol{\omega}_{m,l}^b = \boldsymbol{\omega}_{wb,l}^b + \mathbf{b}_{g,l}^b + \mathbf{n}_{g,l}^b$
 
-    bia误差 $\delta\mathbf{b}_g=\hat{\mathbf{b}}_g-\mathbf{b}_g$
+  - 陀螺仪估计模型：$\hat{\boldsymbol{\omega}}_{wb,l}^b = \boldsymbol{\omega}_{m,l}^b - \hat{\mathbf{b}}_{g,l}^b$
+  - Bias 估计误差定义：$\delta\mathbf{b}_{g,l}^b = \hat{\mathbf{b}}_{g,l}^b - \mathbf{b}_{g,l}^b$
 
-    代入上式得 `角速度测量误差`
+  **代入上式得 `角速度测量误差`**
+  $$
+  \begin{equation}
+  \label{Angular velocity measurement error_updated}
+  \delta\boldsymbol{\omega}_l^b = \boldsymbol{\omega}_{wb,l}^b - \hat{\boldsymbol{\omega}}_{wb,l}^b = - \left( \delta\mathbf{b}_{g,l}^b + \mathbf{n}_{g,l}^b \right)
+  \end{equation}
+  $$
+
+- 处理 式$\eqref{First-order linearization formula of attitude error dynamics}$
+
+  - 将式$\eqref{Attitude error state update equation}$和式$\eqref{Angular velocity measurement error_updated} $代入式$\eqref{First-order linearization formula of attitude error dynamics}$，得到左式有：
+    $$
+    \begin{aligned}
+    \text{leftside} &= -\left(\left[\hat{\boldsymbol{\omega}}_{wb,l}^b \times\right] + \left[\delta\boldsymbol{\omega}_l^b \times\right]\right) \cdot \mathbf{R}_{w',l|l}^b \cdot \left(\mathbf{I} - \left[\delta\boldsymbol{\theta}_{l|l}^{w'} \times\right]\right) \\
+    &= -\left[\hat{\boldsymbol{\omega}}_{wb,l}^b \times\right] \cdot \mathbf{R}_{w',l|l}^b + \left[\hat{\boldsymbol{\omega}}_{wb,l}^b \times\right] \cdot \mathbf{R}_{w',l|l}^b \cdot \left[\delta\boldsymbol{\theta}_{l|l}^{w'} \times\right] \\
+    &\quad - \left[\delta\boldsymbol{\omega}_l^b \times\right] \cdot \mathbf{R}_{w',l|l}^b + \left[\delta\boldsymbol{\omega}_l^b \times\right] \cdot \mathbf{R}_{w',l|l}^b \cdot \left[\delta\boldsymbol{\theta}_{l|l}^{w'} \times\right]
+    \end{aligned}
+    $$
+    
+  - 忽略`高阶无穷小量`$[\delta\boldsymbol{\omega}_l\times]\cdot\mathbf{\hat{R}}_{l|l}\cdot\begin{bmatrix}\delta\boldsymbol{\theta}_{l|l}\times\end{bmatrix}$（二阶无穷小量，其中$[\delta\boldsymbol{\omega}_l\times]$与$\left[\delta\boldsymbol{\theta}_{\boldsymbol{l}|\boldsymbol{l}}\times\right]$），并和式$\eqref{First-order linearization formula of attitude error dynamics}$右边合并同类项，有
+    $$
+    \mathbf{R}_{w',l|l}^b \cdot \left[\delta\dot{\boldsymbol{\theta}}_{l|l}^{w'} \times\right] = \left[\delta\boldsymbol{\omega}_{l}^{b} \times\right] \cdot \mathbf{R}_{w',l|l}^b
+    $$
+
+  - 对上式应用`反对称矩阵（叉乘矩阵）在旋转矩阵下的坐标变换法则`
+
+    > [!NOTE]
+    >
+    > `反对称矩阵（叉乘矩阵）在旋转矩阵下的坐标变换法则`
+    >
+    > - `式子`：
+    >
+    >   对于任意旋转矩阵 $R\in SO(3)$：
+    >   $$
+    >   \boxed{
+    >   R[\mathbf{v}\times]R^T
+    >   =
+    >   [(R\mathbf{v})\times]
+    >   }
+    >   $$
+    >
+    > - `本质`：**两个向量同时经过同一个正交变换（如旋转），它们的叉乘关系保持一致（`旋转等变性`）**
+    >   $$
+    >   R(\mathbf{v}\times\mathbf{x})=(R\mathbf{v})\times(R\mathbf{x})
+    >   $$
+    >
+    > - 推导
+    >
+    >   - 矩阵叉乘的定义：
+    >     $$
+    >     [\mathbf{v}\times]\mathbf{x}
+    >     =
+    >     \mathbf{v}\times\mathbf{x}
+    >     $$
+    >
+    >   - 考虑 $[\mathbf{v}\times]R\mathbf{x}$ ，根据定义变为：
+    >     $$
+    >     [\mathbf{v}\times]R\mathbf{x}=\mathbf{v}\times(R\mathbf{x})
+    >     $$
+    >
+    >   - 利用叉乘旋转不变性，得：
+    >     $$
+    >     \mathbf{v}\times(R\mathbf{x})=R\left((R^T\mathbf{v})\times\mathbf{x}\right)
+    >     \\
+    >     写成矩阵形式
+    >     \\
+    >     =R[(R^T\mathbf{v})\times]\mathbf{x}
+    >     $$
+    >
+    >   - 因为该式对任意向量 $\mathbf{x}$ 成立，因此有：
+    >     $$
+    >     \begin{aligned} \begin{bmatrix}\mathbf{v}\times\end{bmatrix}R &= R[(R^T\mathbf{v})\times] \\ [\mathbf{v}\times]RR^T &= R[(R^T\mathbf{v})\times]R^T \\ [\mathbf{v}\times] &= R[(R^T\mathbf{v})\times]R^T \\ \text{令 } \mathbf{u} = R^T\mathbf{v} &，\text{所以 } \mathbf{v} = R\mathbf{u}，\text{变量替换} \\ [(R\mathbf{u})\times] &= R[\mathbf{u}\times]R^T
+    >     \end{aligned}
+    >     $$
+    >     证明完毕
+    
+    则有：
     $$
     \begin{equation}
-    \label{Angular velocity measurement error}
-    \delta\boldsymbol{\omega}_l=\boldsymbol{\omega}_l-\boldsymbol{\hat{\omega}}_l=-\left(\delta\mathbf{b}_g+\mathbf{n}_g\right)
+    \label{Coordinate transformation relationship between rotation matrix and angular velocity_updated}
+    \mathbf{R}_{w',l|l}^b \cdot \left[\delta\dot{\boldsymbol{\theta}}_{l|l}^{w'} \times\right] = \mathbf{R}_{w',l|l}^b \cdot \left[\left((\mathbf{R}_{w^{\prime},l|l}^b)^T\delta\boldsymbol{\omega}_{l}^{b}\right) \times\right]
+    \end{equation}
+    $$
+
+- 处理式$\eqref{Coordinate transformation relationship between rotation matrix and angular velocity}$
+
+  - 我们观察该式，发现这个式子说明了一点：
+    $$
+    \boxed{\delta\dot{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}\text{ 和 }
+    (\mathbf{R}_{w^{\prime},l|l}^b)^T\delta\boldsymbol{\omega}_l^b\text{ 表示的是同一个向量}}
+    $$
+
+  - 对该式两边同时左乘$(\mathbf{R}_{w^{\prime},l|l}^b)^T$，有：
+    $$
+    \left[\delta\dot{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}\times\right]=\left[\left((\mathbf{R}_{w^{\prime},l|l}^b)^T\delta\boldsymbol{\omega}_l^b\right)\times\right]
+    $$
+
+- 考虑到$\begin{bmatrix}\bullet\times\end{bmatrix}$是一个`线性算子`
+
+  即：
+  $$
+    [a\times]=[b\times]\Rightarrow a=b
+  $$
+  因为：
+  $$
+    [\cdot\times]
+  $$
+  是一个 **一一对应（injective）** 的线性映射
+
+  所以：
+  $$
+    \left[\delta\dot{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}\times\right]=\left[\left((\mathbf{R}_{w^{\prime},l|l}^b)^T\delta\boldsymbol{\omega}_l^b\right)\times\right]
+  $$
+  就必然推出：
+  $$
+    \boxed{
+    \delta\dot{\boldsymbol{\theta}}_{l|l}^{w'} = (\mathbf{R}_{w',l|l}^b)^T \delta\boldsymbol{\omega}_l^b
+    }
+  $$
+  所以得到 `连续时间姿态误差动力学公式`：
+  $$
+  \begin{equation}
+    \label{Kinematic differential equations of the angular error state_fixed}
+    \delta\dot{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}=(\mathbf{R}_{w^{\prime},l|l}^b)^T\delta\boldsymbol{\omega}_l^b
+    \end{equation}
+  $$
+  其中：
+
+    - $\delta\dot{\boldsymbol{\theta}}_{l|l}^{w'}$：姿态误差变化率在**摄动坐标系**（估计世界坐标系 $w'$）下的表示。
+    - $\delta\boldsymbol{\omega}_l^b$：**机体坐标系**（$b$）下的误差角速度。
+    - $(\mathbf{R}_{w',l|l}^b)^T$：从机体系 $b$ 到摄动坐标系 $w'$ 的坐标转换矩阵。
+
+- 根据`线性系统/误差状态离散化`的标准结论：
+
+  > [!NOTE]
+  >
+  > 如果**某个状态的导数不依赖于它自身**，那么它对自己的**状态转移雅可比**就是`单位阵`。
+
+  由于在式$\eqref{Kinematic differential equations of the angular error state_fixed}$中，$\delta{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}$的微分与$\delta{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}$无关，因此可以知道**状态转移矩阵**中的$$\delta{\boldsymbol{\theta}}_{l+1|l}^{w^{\prime}}$$关于$$\delta{\boldsymbol{\theta}}_{l|l}^{w^{\prime}}$$的部分为`单位阵`，即：
+  $$
+  \boldsymbol{\Phi}_{qq}\left(\delta\mathbf{x}_{l+1|l},\delta\mathbf{x}_{l|l}\right)=\mathbf{I}_{3\times3}
+  $$
+
+  **其中**：
+
+  - $\mathbf{\Phi}$：状态转移矩阵，定义是$\boldsymbol{\Phi}=\frac{\partial\delta\mathbf{x}_{l+1|l}}{\partial\delta\mathbf{x}_{l|l}}$，表示当前误差状态变化一点点，会如何影响下一时刻预测误差状态。
+
+    - 下标$q$表示$\theta$，实际意义是姿态误差
+
+    - 下标$qq$表示 姿态误差对姿态误差的雅可比
+    - $\mathbf{\Phi}_{qq}=\frac{\partial\delta\boldsymbol{\theta}_{l+1|l}}{\partial\delta\boldsymbol{\theta}_{l|l}}$
+
+  - $(\delta\mathbf{x}_{l+1|l},\delta\mathbf{x}_{l|l})$：从当前误差状态到预测误差状态
+
+    $\delta\mathbf{x}_{l|l}$ 表示时刻$l$的`后验误差状态（融合完观测之后的误差）`
+
+    $\delta\mathbf{x}_{l+1|l}$ 表示从$l$传播到$l+1$的`预测误差状态（还没更新观测前的误差）`
+
+  **对公式的解释**：
+
+  > **当前的姿态误差 不会自己放大或衰减，只是被“直接传递”到下一时刻**。
+
+  - 也就是说：
+    $$
+    \delta\boldsymbol{\theta}_{l+1|l}=\delta\boldsymbol{\theta}_{l|l}+\text{由角速度误差产生的增量}
+    $$
+
+- 从 `连续时间姿态误差动力学公式`$\eqref{Kinematic differential equations of the angular error state_fixed}$ 推导 `姿态误差状态在一个时间步内的传播公式`：
+
+  - 从 式$\eqref{Kinematic differential equations of the angular error state_fixed}$ 出发：
+    $$
+    \delta\dot{\boldsymbol{\theta}}^{w^{\prime}}(t)=\left(\mathbf{R}_{w^{\prime}}^b(t)\right)^T\delta\boldsymbol{\omega}^b(t)
+    $$
+
+  - 在滤波第 $l$ 个时刻的预测阶段，可写为：
+    $$
+    \delta\dot{\boldsymbol{\theta}}_{\tau|l}^{w^{\prime}}=\left(\mathbf{R}_{w^{\prime},\tau|l}^b\right)^T\delta\boldsymbol{\omega}_{\tau|l}^b
+    $$
+
+  - 对时间区间 $[t_l,\, t_{l+1}]$ 两边积分
+    $$
+    \int_{t_l}^{t_{l+1}}\delta\dot{\boldsymbol{\theta}}_{\tau|l}^{w^{\prime}}d\tau=\int_{t_l}^{t_{l+1}}\left(\mathbf{R}_{w^{\prime},\tau|l}^b\right)^T\delta\boldsymbol{\omega}_{\tau|l}^bd\tau
+    $$
+
+  - 根据微积分定理：
+    $$
+    \int_{t_l}^{t_{l+1}}
+    \dot{\mathbf{x}}(t)\, dt
+    =
+    \mathbf{x}(t_{l+1})
+    -
+    \mathbf{x}(t_l)
+    $$
+    因此得到（只对左边做）：
+    $$
+    \delta\boldsymbol{\theta}_{l+1|l}^{\,w^{\prime}}
+    -
+    \delta\boldsymbol{\theta}_{l|l}^{\,w^{\prime}}
+    =
+    \int_{t_l}^{t_{l+1}}
+    \left(
+    \hat{\mathbf{R}}_{w^{\prime},\,\tau|l}^{\,b}
+    \right)^T
+    \delta\boldsymbol{\omega}_{\,\tau|l}^{\,b}
+    \, d\tau
+    $$
+
+  - 整理得 `离散时间姿态误差传播公式`
+    $$
+    \begin{equation}
+    \label{Discrete-time attitude error propagation formula}
+    \delta\boldsymbol{\theta}_{l+1|l}^{w^{\prime}}=\delta\boldsymbol{\theta}_{l|l}^{w^{\prime}}+\int_{t_l}^{t_{l+1}}\left(\hat{\mathbf{R}}_{w^{\prime},\tau|l}^b\right)^T\delta\boldsymbol{\omega}_{\tau|l}^bd\tau
+    \end{equation}
+    $$
+    其中：
+
+    - $\delta\boldsymbol{\theta}_{l+1|l}^{w^{\prime}}$​：在时刻 $t_{l+1}$ 的姿态误差预测值（用 $t_l$ 的信息预测得到）
+    - $\delta\boldsymbol{\theta}_{l|l}^{w^{\prime}}$：当前时刻的姿态误差（更新预测后）
+    - $\int_{t_l}^t$：从当前时刻到下一时刻，把角速度误差累加
+    - $\tau$：中间时间变量，表示$t_l$到$t_{l+1}$中间的任意时刻，$t_l\leq\tau\leq t_{l+1}$
+    - $\hat{\mathbf{R}}_{w^{\prime},\tau|l}^b$：在时刻$\tau$的姿态的“预测值”，基于$t_l$的信息
+    - $\delta\boldsymbol{\omega}_{\tau|l}^b$：在时刻$\tau$的角速度误差的“预测值”，基于$t_l$的信息
+
+    意思是：
+
+    > **下一时刻的姿态误差 = 当前姿态误差 + 在这段时间内由角速度误差累积产生的姿态误差**
+
+  - 又因为
+    $$
+    \hat{\mathbf{R}}_{b,\tau|l}^{w^{\prime}}
+    =
+    {}_{b_\tau}^{w'}
+    \hat{\mathbf{R}}_{\tau|l}
+    =
+    {}_{b_l}^{w'}
+    \hat{\mathbf{R}}_{l|l}
+    \;
+    {}_{b_\tau}^{b_l}
+    \hat{\mathbf{R}}_{\tau|l}
+    $$
+
+    > [!IMPORTANT]
+    >
+    > 这里是替换了语义，即
+    > $$
+    > R_A^B = {}_A^BR
+    > $$
+
+    所以 式$\eqref{Discrete-time attitude error propagation formula}$​ 可以写成：
+    $$
+    \begin{equation}
+    \label{Angle Error State Prediction Formula}
+    \delta\boldsymbol{\theta}_{l+1|l}^{w^{\prime}}
+    =
+    \delta\boldsymbol{\theta}_{l|l}^{w^{\prime}}
+    +
+    {}^\boldsymbol{w}_{\boldsymbol{b}_l}\mathbf{\hat{R}}_{\boldsymbol{l}|\boldsymbol{l}}\int_{\boldsymbol{t}_l}^{\boldsymbol{t}_{\boldsymbol{l}+\boldsymbol{1}}}
+    {}^{b_{\boldsymbol{l}}}_{b_{\tau}}\mathbf{\hat{R}}_{\boldsymbol{\tau}|\boldsymbol{l}}^T
+    \delta\boldsymbol{\omega}_{\boldsymbol{\tau}|\boldsymbol{l}}d\tau
+    \end{equation}
+    $$
+
+- 推导 **$\delta\boldsymbol{\theta}_{\boldsymbol{l}+1|\boldsymbol{l}}$ 的状态转移方程**
+
+  - 我们定义$\Delta$，它表示了 **在时间区间 $[t_l, t_{l+1}]$ 内，角速度误差积分后，对姿态误差产生的影响**：
+    $$
+    \boldsymbol{\Delta}=-\int_{t_{l}}^{t_{l+1}}
+    {}_{b_\tau}^{b_l}\boldsymbol{\hat{R}}_{\tau|l}\delta\boldsymbol{\omega}_{\tau|l}d\tau
+    $$
+
+  - 根据式$\eqref{Angular velocity measurement error_updated}$，有：
+    $$
+    \begin{equation}
+    \label{ttttttttttttttttttemp}
+    \boldsymbol{\Delta}=
+    \int_{t_l}^{t_{l+1}}
+    {}_{b_\tau}^{b_l}{\hat{R}}_{\tau|l}\cdot\left(\delta\mathbf{b}^b_{g_{\tau|l}}+\mathbf{n}^b_{g\tau}\right)d\tau
+    \end{equation}
+    $$
+    其中：
+  
+    - ${}_{b_\tau}^{b_l}{\hat{R}}_{\tau|l}$：表示 一个向量 从 把 $b_\tau$坐标系 转换到 $b_l$坐标系**（误差要统一到同一个参考时刻）**
+  
+      比如机器人在旋转时，不同时间的角速度误差方向不一样，必须要先旋转到同一坐标系再积分
+  
+    - $\delta\mathbf{b}_{g_{\tau|l}}^{b}$：陀螺 bias 估计误差 在 **从 $l$时刻 传播到 $\tau$时刻** 时的值
+  
+    - $\mathbf{n}_{g\tau}^b$：在 时刻$\tau$ 的陀螺仪白噪声（定义在body坐标系）
+  
+  - 处理 `零偏`$b$
+  
+    - 对`测量值`：在 $t_{l+1}$ 与 $t_l$ 时刻之间，对于$b_g$的估计值$\mathbf{\hat{b}}_{g\tau|l}$，由于**没有测量值，因此无法进行测量更新**，则有
+      $$
+      \begin{equation}
+      \label{Gyroscope Bias Constant Assumption}
+      \mathbf{\hat{b}}_{g\tau|l}=\mathbf{\hat{b}}_{gl|l}
+      \end{equation}
+      $$
+  
+    - 对`真实值`：根据 式$\eqref{b_g_}$，有：
+      $$
+      \begin{equation}
+      \label{Gyroscope Bias Random Walk Model}
+      \mathbf{b}_{g\tau}=\mathbf{b}_{gl}+\int_{t_{l}}^{\tau}\mathbf{n}_{wgs}ds
+      \end{equation}
+      $$
+      其中：
+  
+      - $\mathbf{b}_{g\tau}$：时刻 $\tau$ 的陀螺仪 bias
+      - $\mathbf{b}_{gl}$：时刻 $t_l$ 的陀螺仪 bias
+  
+      + $\mathbf{n}_{wgs}$：其实真正写的是$\mathbf{n}_{wg}(s)$，$s$是时间，$\mathbf{n}_{wg}$是陀螺仪bias的随机游走噪声
+  
+    - 对`误差值`：根据 式$\eqref{Gyroscope Bias Constant Assumption}$ 和 式$\eqref{Gyroscope Bias Random Walk Model}$ 有：
+      $$
+      \begin{equation}
+      \label{b_gr|l}
+      \begin{aligned}
+      \delta\mathbf{b}_{g\tau|l}&=\mathbf{b}_{g\tau}-\mathbf{\hat{b}}_{g\tau|l}
+      \\
+      &=\mathbf{b}_{gl}+\int_{t_l}^\tau\mathbf{n}_{wg}(s)ds-\mathbf{\hat{b}}_{gl|l}
+      \\
+      &因为\delta\mathbf{b}_{gl|l}=\mathbf{b}_{gl}-\mathbf{\hat{b}}_{gl|l}
+      \\
+      &=\delta\mathbf{b}_{gl|l}+\int_{t_l}^\tau\mathbf{n}_{wg}(s)ds
+      \end{aligned}
+      \end{equation}
+      $$
+  
+  - 将 式$\eqref{b_gr|l}$ 代回 式$\eqref{ttttttttttttttttttemp}$，得：
+    $$
+    \begin{equation}
+    \label{ttttemp}
+    \boldsymbol{\Delta}=\int_{t_l}^{t_{l+1}}\begin{array}{c}b_l\\b_\tau\end{array}\hat{\mathbf{R}}_{\tau|l}\cdot\left(\delta\mathbf{b}_{gl|l}+\int_{t_l}^{\tau}\mathbf{n}_{wgs}ds+\mathbf{n}_{g\tau}\right)d\tau
     \end{equation}
     $$
   
-  - 忽略高阶无穷小量 ，并和式$\eqref{}$右边合并同类项，有
+  - 将 式$\eqref{ttttemp}$ 代回 式$\eqref{Angle Error State Prediction Formula}$
+    $$
+    \begin{equation}
+    \label{Error state transfer equation for gyroscope integration}
+    \begin{aligned}
+    \delta \boldsymbol{\theta}_{l+1|l} &= \delta \boldsymbol{\theta}_{l|l} - {}_{b_l}^{w}\hat{\mathbf{R}}_{l|l} \int_{t_l}^{t_{l+1}} {}_{b_{\tau}}^{b_l}\hat{\mathbf{R}}_{\tau|l} \cdot \left( \delta \mathbf{b}_{gl|l} + \int_{t_l}^{\tau} \mathbf{n}_{wgs} ds + \mathbf{n}_{g\tau} \right) d\tau \\ &= \delta \boldsymbol{\theta}_{l|l} - \left[ {}_{b_l}^{w}\hat{\mathbf{R}}_{l|l} \int_{t_l}^{t_{l+1}} {}_{b_{\tau}}^{b_l}\hat{\mathbf{R}}_{\tau|l} d\tau \right] \cdot \delta \mathbf{b}_{gl|l} + {}_{b_l}^{w}\hat{\mathbf{R}}_{l|l} \int_{t_l}^{t_{l+1}} {}_{b_{\tau}}^{b_l}\hat{\mathbf{R}}_{\tau|l} \cdot \left( \int_{t_l}^{\tau} \mathbf{n}_{wgs} ds + \mathbf{n}_{g\tau} \right) d\tau
+    \end{aligned}
+    \end{equation}
+    $$
+    
+  - 将 **上式** 写成 `状态转移方程`的形式 如下：
+    $$
+    \delta\boldsymbol{\theta}_{l+1|l}=\boldsymbol{\Phi}_{qq}\left(l+1,l\right)\cdot\delta\boldsymbol{\theta}_{l|l}+\boldsymbol{\Phi}_{qb_{g}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{gl|l}+\mathbf{n}_{\theta l+1}
+    \\
+    下一时刻姿态误差=上一时刻姿态误差+bias误差影响+随机噪声
+    $$
+    **其中**：
   
+    - $\boldsymbol{\Phi}_{qq}\left(l+1,l\right)=\mathbf{I}_{3\times3}$，那么 $\delta\theta_{l+1}=I\cdot\delta\theta_l$ ，意思是**如果没有 bias 误差和噪声，姿态误差会保持不变**。（如果现在姿态误差是1°，那下一时刻的姿态误差还是1°，不会自己消失）
+    - $\Phi_{qb_{g}}\left(l+1,l\right) = -_{b_{l}}^{w} \hat{\mathbf{R}}_{l|l} \int_{t_{l}}^{t_{l+1}} \hat{\mathbf{R}}_{\tau|l} \, d\tau$，该项表示 **bias 误差如何影响姿态误差**
+      - $\hat{R}_{l|l}$：从 body 到 world 的 **当前时刻的估计姿态**
+      - $\hat{R}_{\tau|l}$：从 时刻$l$ 传播到 中间时刻$\tau$ 的估计姿态
+      - $\int_{t_l}^{t_{l+1}}\hat{R}_{\tau|l}d\tau$：在这一小段时间里，姿态的累计影响
+      - 负号：来自误差定义 $\omega_{true}=\omega_{meas}-b_g$
   
+    - $\mathbf{n}_{\theta{l+1}}={}_{b_l}^{w}\hat{\mathbf{R}}_{l|l} \int_{t_l}^{t_{l+1}} {}_{b_{\tau}}^{b_l}\hat{\mathbf{R}}_{\tau|l} \cdot \left( \int_{t_l}^{\tau} \mathbf{n}_{wgs} ds + \mathbf{n}_{g\tau} \right) d\tau$，该项表示 **IMU 噪声导致的姿态误差**
+      - $\mathbf{n}_{g\tau}$：陀螺仪测量噪声
+      - $\int_{t_l}^\tau\mathbf{n}_{wg}(s)ds$：bias随机游走（bias自己在漂）
+      - 旋转矩阵：因为噪声在 `body坐标系`，但姿态误差在 `world 坐标系`，所以必须不断旋转过去
   
+    **解释公式**：
   
+    > [!NOTE]
+    >
+    > `本质`：把连续时间误差方程，整理成 **离散的状态转移方程（state transition equation）**。
+
+
+
+### $\delta\mathbf{b}_{g\boldsymbol{l+1}|\boldsymbol{l}}$ 的状态转移方程
+
+- 根据 式$\eqref{b_gr|l}$ ，可得 $\delta\mathbf{b}_{g\boldsymbol{l+1}|\boldsymbol{l}}$ 的`状态转移方程`如下：
+  $$
+  \delta\mathbf{b}_{gl+1|l}=\delta\mathbf{b}_{gl|l}+\int_{t_l}^{t_{l+1}}\mathbf{n}_{wg\tau}d\tau
+  $$
+
+- 写成 `状态转移方程`的形式：
+  $$
+  \delta\mathbf{b}_{gl+1|l}=\boldsymbol{\Phi}_{b_{g}b_{g}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{gl|l}+\mathbf{n}_{b_{g}l+1}
+  \\
+  下一时刻的 bias 误差=当前 bias 误差+随机噪声
+  $$
+  其中：
+
+  - $\boldsymbol{\Phi}_{b_{g}b_{g}}\left(l+1,l\right)=\mathbf{I}_{3\times3}$，这是因为$\dot{b}_g=n_{wg}$，即bias不会自己变，只会被噪声推动。
+  - $\mathbf{n}_{b_{g}l+1}=\int_{t_{l}}^{t_{l+1}}\mathbf{n}_{wg\tau}d\tau$
+
+
+
+### $\delta\mathbf{v}_{\boldsymbol{l}+1|\boldsymbol{l}}$的状态转移方程
+
+- 根据之前的章节我们知道 $\delta\mathbf{v}_{l+1|l}=\mathbf{v}_{l+1}-\mathbf{\hat{v}}_{l+1|l}$，其中根据式$\eqref{IMU kinematic equations}$得到：
+  $$
+  \mathbf{v}_{l+1}=\mathbf{v}_l+\int_{t_l}^{t_{l+1}}\mathbf{R}_{b_\tau}^w\cdot\mathbf{a}_\tau d\tau
+  $$
+  其中：
+
+  - $\mathbf{a}_\tau=\mathbf{f}_{m\tau}-\mathbf{b}_{a\tau}-\mathbf{n}_{a\tau}+\mathbf{g}^{b_\tau}$
+
+  则对于`速度真实值`：
+  $$
+  \begin{equation}
+  \label{Continuous-time integration process of IMU velocity state}
+  \begin{aligned}
+  \mathbf{v}_{l+1} &= \mathbf{v}_l + \int_{t_l}^{t_{l+1}} \left[ \mathbf{R}_{b_\tau}^w \cdot \mathbf{f}_{m\tau} + \mathbf{g}^w - \mathbf{R}_{b_\tau}^w \cdot (\mathbf{b}_{a\tau} + \mathbf{n}_{a\tau}) \right] d\tau 
+  \\
+  &因为重力加速度g不会随时间变化，所以可以提取出来
+  \\
+  &又因为常量积分的积分规则为\int_{t_l}^{t_{l+1}}cd\tau=c(t_{l+1}-t_l)
+  \\
+  &所以我们定义\Delta t=t_{l+1}-t_l
+  \\
+  &= \mathbf{v}_l + \int_{t_l}^{t_{l+1}} \mathbf{R}_{b_\tau}^w \cdot (\mathbf{f}_{m\tau} - \mathbf{b}_{a\tau} - \mathbf{n}_{a\tau}) d\tau + \Delta t \cdot \mathbf{g}^w
+  \end{aligned}
+  \end{equation}
+  $$
+  同理，对于`速度估计值`：
+  $$
+  \begin{equation}
+  \label{Continuous-time integral process for IMU to estimate velocity state}
+  \mathbf{\hat{v}}_{l+1|l}=\mathbf{\hat{v}}_{l|l}+\int_{t_l}^{t_{l+1}}\mathbf{\hat{R}}_{b_\tau}^w\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau}\right)d\tau+\Delta t\cdot\mathbf{g}^w
+  \end{equation}
+  $$
+
+- 分别在 式$\eqref{Continuous-time integration process of IMU velocity state}$ 和 式$\eqref{Continuous-time integral process for IMU to estimate velocity state}$ 中，令
+
+  $$
+  \mathbf{s}_l=\int_{t_l}^{t_{l+1}}\mathbf{R}_{b_\tau}^w\cdot\left(\mathbf{f}_{m\tau}-\mathbf{b}_{a\tau}-\mathbf{n}_{a\tau}\right)d\tau
+  \\
+  \mathbf{\hat{s}}_l=\int_{t_l}^{t_{l+1}}\mathbf{\hat{R}}_{b_\tau}^w\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau}\right)d\tau
+  $$
+
+- 根据上面两个式子，定义 误差$\delta s_{l}$ 为：
+  $$
+  \begin{equation}
+  \label{Error state equation for acceleration integral}
+  \begin{aligned}&\delta\mathbf{s}_{l}=\mathbf{s}_{l}-\mathbf{\hat{s}}_{l}\\&=\int_{t_l}^{t_{l+1}}\mathbf{R}_{b_\tau}^w\cdot(\mathbf{f}_{m\tau}-\mathbf{b}_{a\tau}-\mathbf{n}_{a\tau})d\tau-\int_{t_l}^{t_{l+1}}\mathbf{\hat{R}}_{b_\tau}^w\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau}\right)d\tau\end{aligned}
+  \end{equation}
+  $$
+
+- 根据 式$\eqref{homomorphy_R}$ 与 式$\eqref{Linear approximation of infinitesimal rotation matrices}$ 有：
+  $$
+  \mathbf{R}_{b}^{w}=\left(\mathbf{I}+\left[\delta\boldsymbol{\theta}\times\right]\right)\mathbf{\hat{R}}_{b}^{w}
+  $$
+
+- 将 上式（加上时间维度$\tau$） 代入 式$\eqref{Error state equation for acceleration integral}$ 得：
+  $$
+  \begin{equation}
+  \label{IMU error state propagation}
+  \begin{aligned}&\delta\mathbf{s}_{l}=\int_{t_{l}}^{t_{l+1}}\left(\mathbf{I}+\left[\delta\theta_{\tau|l}\times\right]\right)\cdot\mathbf{\hat{R}}_{b_{r}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{b}_{a\tau}-\mathbf{n}_{a\tau}\right)d\tau-\int_{t_{l}}^{t_{l+1}}\mathbf{\hat{R}}_{b_{r}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau}\right)d\tau\\&=\int_{t_{l}}^{t_{l+1}}\mathbf{\hat{R}}_{b_{r}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{b}_{a\tau}-\mathbf{n}_{a\tau}-\mathbf{f}_{m\tau}+\mathbf{\hat{b}}_{a\tau}\right)d\tau+\int_{t_{l}}^{t_{l+1}}\left[\delta\theta_{\tau|l}\times\right]\cdot\mathbf{\hat{R}}_{b_{r}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{b}_{a\tau}-\mathbf{n}_{a\tau}\right)d\tau\\&=\int_{t_{l}}^{t_{l+1}}\mathbf{\hat{R}}_{b_{r}}^{w}\cdot\left(-\delta\mathbf{b}_{a\tau|l}-\mathbf{n}_{a\tau}\right)d\tau+\int_{t_{l}}^{t_{l+1}}\left[\delta\theta_{\tau|l}\times\right]\cdot\mathbf{\hat{R}}_{b_{r}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau|l}-\delta\mathbf{b}_{a\tau|l}-\mathbf{n}_{a\tau}\right)d\tau\end{aligned}
+  \end{equation}
+  $$
+  在上式中，记 $\delta\mathbf{s}_l=\delta\mathbf{s}_A+\delta\mathbf{s}_B$，即
+  $$
+  \begin{equation}
+  \label{IMU error state propagation A}
+  \delta\mathbf{s}_{A}=\int_{t_{l}}^{t_{l+1}}\mathbf{\hat{R}}_{b_{\tau}}^{w}\cdot\left(-\delta\mathbf{b}_{a\tau|l}-\mathbf{n}_{a\tau}\right)d\tau
+  \end{equation}
+  $$
+
+  $$
+  \begin{equation}
+  \label{IMU error state propagation B}
+  \delta\mathbf{s}_B=\int_{t_l}^{t_{l+1}}\left[\delta\theta_{\tau|l}\times\right]\cdot\mathbf{\hat{R}}_{b_r}^w\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau|l}-\delta\mathbf{b}_{a\tau|l}-\mathbf{n}_{a\tau}\right)d\tau
+  \end{equation}
+  $$
+
+- 下面分别推导$\delta\mathbf{s}_{A}$和$\delta\mathbf{s}_B$
+
+  - $\delta\mathbf{s}_{A}$：
+
+    参考式$\eqref{b_gr|l}$，有
+    $$
+    \begin{equation}
+    \label{Accelerometer Bias Error Random Walk Model}
+    \delta\mathbf{b}_{a\tau|l}=\delta\mathbf{b}_{al|l}+\int_{t_l}^\tau\mathbf{n}_{was}ds
+    \end{equation}
+    $$
+    将 上式 代入 式$\eqref{IMU error state propagation A}$
+    $$
+    \begin{equation}
+    \label{The linearized expansion of velocity error with respect to accelerometer source error in the IMU error state-space model}
+    \begin{aligned}&\delta\mathbf{s}_{A}=\int_{t_l}^{t_{l+1}}\mathbf{\hat{R}}_{b_r}^w\cdot\left(-\delta\mathbf{b}_{al|l}-\int_{t_l}^\tau\mathbf{n}_{was}ds-\mathbf{n}_{a\tau}\right)d\tau\\&=-\int_{t_l}^{t_{l+1}}\mathbf{\hat{R}}_{b_\tau}^wd\tau\cdot\delta\mathbf{b}_{al|l}+\int_{t_l}^{t_{l+1}}\mathbf{\hat{R}}_{b_\tau}^w\cdot\left(-\int_{t_l}^\tau\mathbf{n}_{was}ds-\mathbf{n}_{a\tau}\right)d\tau\end{aligned}
+    \end{equation}
+    $$
+    在 上式中，**记 $\mathbf{n}_{vl+1A}$ 为在时间区间 $[t_l, t_{l+1}]$ 内，由陀螺噪声和加速度计噪声传播到速度上的误差项（A项）**
+    $$
+    \mathbf{n}_{vl+1A}=\int_{t_{l}}^{t_{l+1}}\mathbf{\hat{R}}_{b_{\tau}}^{w}\cdot\left(-\int_{t_{l}}^{\tau}\mathbf{n}_{was}ds-\mathbf{n}_{a\tau}\right)d\tau
+    $$
+  
+  - $\delta\mathbf{s}_B$：
+  
+    首先，忽略 高阶小量$\left[\delta\theta_{\tau|l}\times\right]\cdot\mathbf{\hat{R}}_{b_\tau}^w\cdot\left(-\delta\mathbf{b}_{a\tau|l}-\mathbf{n}_{a\tau}\right)$ ，则有
+    $$
+    \delta\mathbf{s}_{B}\approx\int_{t_{l}}^{t_{l+1}}\left[\delta\theta_{\tau|l}\times\right]\cdot\mathbf{\hat{R}}_{b_{\tau}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau|l}\right)d\tau
+    $$
+    根据 式$\eqref{Differential equation for the estimated carrier velocity}$，有
+    $$
+    \mathbf{\dot{\hat{v}}}_{\tau}=\mathbf{\hat{a}}_{\tau}^{w}=\mathbf{\hat{R}}_{b_{\tau}}^{w}\cdot\left(\mathbf{f}_{m\tau}-\mathbf{\hat{b}}_{a\tau|l}\right)+\mathbf{g}^{w}
+    $$
+    于是有
+    $$
+    \delta\mathbf{s}_{B}
+    =\int_{t_{l}}^{t_{l+1}}\left[\delta\boldsymbol{\theta}_{\tau|l}\times\right]\cdot\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right)d\tau
+    \\
+    根据叉乘矩阵的反交换律a\times b=-b\times a
+    \\
+    =-\int_{t_{l}}^{t_{l+1}}\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right)\times\right]\cdot\delta\boldsymbol{\theta}_{\tau|l}d\tau
+    $$
+    再根据 式$\eqref{Error state transfer equation for gyroscope integration}$，则有
+    $$
+    \begin{equation}
+    \label{The linearized expansion of the velocity error with respect to the attitude source error in the IMU error state-space model}
+    \begin{aligned}
+    \delta\mathbf{s}_{B} &=-\int_{t_{l}}^{t_{l+1}}\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right) \times\right] d \tau \cdot \delta \boldsymbol{\theta}_{l \mid l} \\
+    &+\int_{t_{l}}^{t_{l+1}}\left\{\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right) \times\right] \cdot{ }_{b_{l}}^{w} \hat{\mathbf{R}}_{l \mid l} \cdot\left(\int_{t_{l}}^{\tau}{ }_{b_{m}}^{b_{l}} \hat{\mathbf{R}}_{m \mid l} d m\right)\right\} d \tau \cdot \delta \mathbf{b}_{g l \mid l} \\
+    &-\int_{t_{l}}^{t_{l+1}}\left\{\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right) \times\right] \cdot{ }_{b_{l}}^{w} \hat{\mathbf{R}}_{l \mid l} \cdot\left[\int_{t_{l}}^{\tau}{ }_{b_{m}}^{b_{l}} \hat{\mathbf{R}}_{m \mid l} \cdot\left(\int_{t_{l}}^{m} \mathbf{n}_{w g s} d s+\mathbf{n}_{g m}\right) d m\right]\right\} d \tau
+    \end{aligned}
+    \end{equation}
+    $$
+    **记 $\mathbf{n}_{vl+1B}$ 为在时间区间 $[t_l, t_{l+1}]$​ 内，由陀螺仪噪声经过姿态积分，再影响加速度方向，最终累积成的速度误差。**
+    $$
+    \mathbf{n}_{vl+1B}=-\int_{t_{l}}^{t_{l+1}}\left\{\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right)\times\right]\cdot{}_{b_{l}}^{w}\hat{\mathbf{R}}_{l|l}\cdot\left[\int_{t_{l}}^{\tau}{}_{b_{m}}^{b_{l}}\hat{\mathbf{R}}_{m|l}\cdot\left(\int_{t_{l}}^{m}\mathbf{n}_{wgs}ds+\mathbf{n}_{gm}\right)dm\right]\right\}d\tau
+    \\
+    \boxed{
+    \text{gyro noise}
+    \;\rightarrow\;
+    \text{姿态误差}
+    \;\rightarrow\;
+    \text{加速度方向误差}
+    \;\rightarrow\;
+    \text{速度误差}
+    }
+    $$
+  
+  又因为 $\mathbf{v}_{l+1}=\mathbf{v}_l+\mathbf{s}_{l}+\Delta t\cdot\mathbf{g}^w$ 和 $\mathbf{\hat{v}}_{l+1|l}=\mathbf{\hat{v}}_{l|l}+\mathbf{\hat{s}}_l+\Delta t\cdot\mathbf{g}^w$，有：
+  $$
+  \begin{aligned}&\delta\mathbf{v}_{l+1|l}=\mathbf{v}_{l+1}-\mathbf{\hat{v}}_{l+1|l}\\&=(\mathbf{v}_l-\mathbf{\hat{v}}_{l|l})+(\mathbf{s}_l-\mathbf{\hat{s}}_l)+(\Delta t\cdot\mathbf{g}^w-\Delta t\cdot\mathbf{g}^w)\\&=\delta\mathbf{v}_{l|l}+\delta\mathbf{s}_{l}\\&=\delta\mathbf{v}_{l|l}+\delta\mathbf{s}_{A}+\delta\mathbf{s}_{B}\end{aligned}
+  $$
+  根据 式$\eqref{The linearized expansion of velocity error with respect to accelerometer source error in the IMU error state-space model}$ 和 式$\eqref{The linearized expansion of the velocity error with respect to the attitude source error in the IMU error state-space model}$ ，则有 $\delta\mathbf{v}_{\boldsymbol{l+1}|\boldsymbol{l}}$ 的`状态转移方程`：
+  
+  - **处理 $\delta s_A$（加速度源误差项）**
+    $$
+    \delta\mathbf{s}_{A}
+    =
+    -\int_{t_l}^{t_{l+1}}
+    \hat{\mathbf{R}}_{b_\tau}^w
+    d\tau
+    \cdot
+    \delta\mathbf{b}_{a\,l|l}
+    +
+    \int_{t_l}^{t_{l+1}}
+    \hat{\mathbf{R}}_{b_\tau}^w
+    \cdot
+    \left(
+    -\int_{t_l}^\tau\mathbf{n}_{was}ds
+    -\mathbf{n}_{a\tau}
+    \right)
+    d\tau
+    $$
+    把它分成两部分：
+  
+    1. bias项
+       $$
+       \boldsymbol{\Phi}_{vb_a}=-\int_{t_l}^{t_{l+1}}\hat{\mathbf{R}}_{b_\tau}^wd\tau
+       $$
+  
+    2. 噪声项
+       $$
+       \mathbf{n}_{vl+1A}=\int_{t_l}^{t_{l+1}}\hat{\mathbf{R}}_{b_\tau}^w\cdot\left(-\int_{t_l}^\tau\mathbf{n}_{was}ds-\mathbf{n}_{a\tau}\right)d\tau
+       $$
+  
+    所以：
+    $$
+    \delta s_A=\boldsymbol{\Phi}_{vb_a}\delta b_{al|l}+\mathbf{n}_{vl+1A}
+    $$
+  
+  - **处理 $\delta s_B$（姿态源误差项）**
+    $$
+    \delta s_B
+    =
+    T_1
+    +
+    T_2
+    +
+    T_3
+    $$
+    我们逐项处理：
+  
+    1. 姿态误差
+       $$
+       T_1
+       =
+       -
+       \int
+       [
+       (\dot{\hat v}_\tau-g)
+       \times
+       ]
+       d\tau
+       \cdot
+       \delta\theta_{l|l}
+       $$
+       直接识别 Jacobian：
+       $$
+       \boldsymbol{\Phi}_{vq}
+       =
+       -
+       \int_{t_l}^{t_{l+1}}
+       [
+       (\dot{\hat v}_\tau-g)
+       \times
+       ]
+       d\tau
+       $$
+       因此：
+       $$
+       T_1
+       =
+       \boldsymbol{\Phi}_{vq}
+       \,
+       \delta\theta_{l|l}
+       $$
+       
+    2. 陀螺仪bias
+       $$
+       T_2
+       =
+       \int
+       \left\{
+       [
+       (\dot{\hat v}_\tau-g)
+       \times
+       ]
+       \hat R_{b_l}^w
+       \left(
+       \int_{t_l}^{\tau}
+       \hat R_{b_m}^{b_l}
+       dm
+       \right)
+       \right\}
+       d\tau
+       \cdot
+       \delta b_{g\,l|l}
+       $$
+       直接定义：
+       $$
+       \boldsymbol{\Phi}_{vb_g}
+       =
+       \int_{t_l}^{t_{l+1}}
+       \left\{
+       [
+       (\dot{\hat v}_\tau-g)
+       \times
+       ]
+       \hat R_{b_l}^w
+       \left(
+       \int_{t_l}^{\tau}
+       \hat R_{b_m}^{b_l}
+       dm
+       \right)
+       \right\}
+       d\tau
+       $$
+       所以：
+       $$
+       T_2
+       =
+       \boldsymbol{\Phi}_{vb_g}
+       \,
+       \delta b_{g\,l|l}
+       $$
+       
+    3. 陀螺仪噪声
+       $$
+       T_3
+       =
+       -
+       \int
+       \left\{
+       [
+       (\dot{\hat v}_\tau-g)
+       \times
+       ]
+       \hat R_{b_l}^w
+       \left[
+       \int_{t_l}^{\tau}
+       \hat R_{b_m}^{b_l}
+       \cdot
+       \left(
+       \int_{t_l}^{m} n_{wgs}ds
+       +
+       n_{gm}
+       \right)
+       dm
+       \right]
+       \right\}
+       d\tau
+       $$
+       定义：
+       $$
+       \mathbf{n}_{v\,l+1B}
+       =
+       T_3
+       $$
+    
+    所以：
+    $$
+    \delta s_B
+    =
+    \boldsymbol{\Phi}_{vq}
+    \,
+    \delta\theta_{l|l}
+    +
+    \boldsymbol{\Phi}_{vb_g}
+    \,
+    \delta b_{g\,l|l}
+    +
+    \mathbf{n}_{v\,l+1B}
+    $$
+    
+  - 把所有项合并
+    $$
+    \boxed{
+    \delta v_{l+1|l}
+    =
+    \delta v_{l|l}
+    +
+    \boldsymbol{\Phi}_{vq}
+    \delta\theta_{l|l}
+    +
+    \boldsymbol{\Phi}_{vb_g}
+    \delta b_{g\,l|l}
+    +
+    \boldsymbol{\Phi}_{vb_a}
+    \delta b_{a\,l|l}
+    +
+    \mathbf{n}_{v\,l+1}
+    }
+    $$
+  
+  - 转换为`状态转移方程标准形式`
+    $$
+    \begin{aligned}\delta\mathbf{v}_{l+1|l}&=\boldsymbol{\Phi}_{vv}\left(l+1,l\right)\cdot\delta\mathbf{v}_{l|l}+\boldsymbol{\Phi}_{vq}\left(l+1,l\right)\cdot\delta\boldsymbol{\theta}_{l|l}\\&+\boldsymbol{\Phi}_{vb_{g}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{g\boldsymbol{l}|\boldsymbol{l}}+\boldsymbol{\Phi}_{vb_{a}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{a\boldsymbol{l}|\boldsymbol{l}}+\mathbf{n}_{v\boldsymbol{l}+1}\end{aligned}
+    $$
+    其中：
+  
+    - $\Phi_{vv}\left(l+1,l\right)=\mathbf{I}_{3\times3}$，表示当前的速度误差回直接保留到下一时刻
+    - $\boldsymbol{\Phi}_{vq}\left(l+1,l\right)=-\int_{t_{l}}^{t_{l+1}}\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right)\times\right]d\tau=-\left[\left(\mathbf{\hat{v}}_{l+1|l}-\mathbf{\hat{v}}_{l|l}-\Delta t\cdot\mathbf{g}^{w}\right)\times\right]$，表示姿态错一点点，会让加速度方向错，从而让速度错
+    - $\Phi_{vb_{g}}\left(l+1,l\right)=\int_{t_{l}}^{t_{l+1}}\left\{\left[\left(\dot{\hat{\mathbf{v}}}_{\tau}-\mathbf{g}^{w}\right)\times\right]\cdot_{b_{l}}^{w}\mathbf{\hat{R}}_{l|l}\cdot\left(\int_{t_{l}}^{\tau}{}_{b_{m}}^{b_{l}}\mathbf{\hat{R}}_{m|l}dm\right)\right\}d\tau$，表示 陀螺bias 会导致姿态慢慢漂移，进而导致速度误差
+    - $\boldsymbol{\Phi}_{v b_{a}}(l+1, l)=-\int_{t_{l}}^{t_{l+1}} {}_{b_{\tau}}^{w} \hat{\mathbf{R}}_{\tau \mid l} d \tau=-{}_{b_{l}}^{w} \hat{\mathbf{R}}_{l \mid l} \cdot \int_{t_{l}}^{t_{l+1}} {}_{b_{\tau}}^{b_{l}} \hat{\mathbf{R}}_{\tau \mid l} d \tau$，表示 加速度计bias 会直接积分成 速度误差
+    - $\mathbf{n}_{vl+1}=\mathbf{n}_{vl+1A}+\mathbf{n}_{vl+1B}$，表示随机噪声
+
+
+
+### $\delta\mathbf{b}_{al+1|l}$ 的状态转移方程
+
+根据 式$\eqref{Accelerometer Bias Error Random Walk Model}$ ，可得 $\delta\mathbf{b}_{al+1|l}$ 的状态转移方程如下:
+$$
+\delta\mathbf{b}_{al+1|l}=\delta\mathbf{b}_{al|l}+\int_{t_l}^{t_{l+1}}\mathbf{n}_{wa\tau}d\tau
+$$
+变为`状态转移方程标准形式`：
+$$
+\delta\mathbf{b}_{al+1|l}=\boldsymbol{\Phi}_{b_{a}b_{a}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{al|l}+\mathbf{n}_{b_{a}l+1}
+$$
+其中：
+
+- $\boldsymbol{\Phi}_{b_{a}b_{a}}\left(l+1,l\right)=\mathbf{I}_{3\times3}$
+- $\mathbf{n}_{b_al+1}=\int_{t_l}^{t_{l+1}}\mathbf{n}_{wa\tau}d\tau$
+
+
+
+### $\delta\mathbf{p}_{\boldsymbol{l+1}|\boldsymbol{l}}$ 的状态转移方程
+
+- 根据 式$\eqref{Error_carrier_position}$，有
+  $$
+  \delta\mathbf{p}_{l+1|l}=\mathbf{p}_{l+1}-\mathbf{\hat{p}}_{l+1|l}
+  $$
+  其中
+  $$
+  \begin{equation}
+  \label{Position Integration Equation}
+  \mathbf{p}_{l+1}=\mathbf{p}_l+\int_{t_l}^{t_{l+1}}\mathbf{v}_\tau d\tau
+  \end{equation}
+  $$
+  
+- 处理 位姿$p$
+  
+  - 对于`位姿真实值`$p_{l+1}$
+  
+    根据 式$\eqref{Continuous-time integration process of IMU velocity state}$ ，有
+    $$
+    \mathbf{v}_{\tau}=\mathbf{v}_{l}+\int_{t_{l}}^{\tau}{}_{b_{s}}^{w}\mathbf{R}\cdot\left(\mathbf{f}_{ms}-\mathbf{b}_{as}-\mathbf{n}_{as}\right)ds+\left(\tau-t_{l}\right)\cdot\mathbf{g}^{w}
+    $$
+    将其代入 式$\eqref{Position Integration Equation}$ 得
+    $$
+    \mathbf{p}_{l+1}=\mathbf{p}_l+\Delta t\cdot\mathbf{v}_l+\frac{1}{2}\Delta t^2\mathbf{g}^w+\int_{t_l}^{t_{l+1}}\left[\int_{t_l}^{\tau}{}_{b_s}^w\mathbf{R}\cdot\left(\mathbf{f}_{ms}-\mathbf{b}_{as}-\mathbf{n}_{as}\right)ds\right]d\tau
+    $$
+    在上式中，我们记
+    $$
+    \begin{equation}
+    \label{Complete physical process formula for position integration}
+    \mathbf{y}_{l}=\int_{t_{l}}^{t_{l+1}}\left[\int_{t_{l}}^{\tau}{}_{b_{s}}^{w}\mathbf{R}\cdot\left(\mathbf{f}_{ms}-\mathbf{b}_{as}-\mathbf{n}_{as}\right)ds\right]d\tau
+    \end{equation}
+    $$
+  
+  - 对于`位姿估计值`$\hat{p}_{l+1}$
+  
+    同理有：
+    $$
+    \mathbf{\hat{p}}_{l+1|l}
+    =
+    \mathbf{\hat{p}}_{l|l}
+    +
+    \Delta t\cdot\mathbf{\hat{v}}_{l|l}
+    +
+    \frac{1}{2}\Delta t^{2}\mathbf{g}^{w}
+    +
+    \int_{t_{l}}^{t_{l+1}}\left[\int_{t_{l}}^{\tau}{}_{b_s}^w\mathbf{\hat{R}}_{s|l}\cdot\left(\mathbf{f}_{ms}-\mathbf{\hat{b}}_{as}\right)ds\right]d\tau
+    $$
+    上式中，记
+    $$
+    \begin{equation}
+    \label{The nominal state equation for IMU location prediction}
+    \mathbf{\hat{y}}_{\boldsymbol{l}}
+    =
+    \int_{t_{l}}^{t_{l+1}}\left[\int_{t_{l}}^{\tau}{}_{b_s}^w\mathbf{\hat{R}}_{s|l}\cdot\left(\mathbf{f}_{ms}-\mathbf{\hat{b}}_{as}\right)ds\right]d\tau
+    \end{equation}
+    $$
+  
+  - 记 $\delta\mathbf{y}_l=\mathbf{y}_l-\mathbf{\hat{y}}_l$，则有
+    $$
+    \begin{equation}
+    \label{Discrete-time Position Error State Update Equation}
+    \begin{aligned}&\delta\mathbf{p}_{l+1|l}=\mathbf{p}_{l+1}-\mathbf{\hat{p}}_{l+1|l}\\&=\left(\mathbf{p}_l-\mathbf{\hat{p}}_{l|l}\right)+\Delta t\cdot\left(\mathbf{v}_l-\mathbf{\hat{v}}_{l|l}\right)+\mathbf{y}_l-\mathbf{\hat{y}}_l\\&=\delta\mathbf{p}_{l|l}+\Delta t\cdot\delta\mathbf{v}_{l|l}+\delta\mathbf{y}_l\end{aligned}
+    \end{equation}
+    $$
+
+- 分析 $\delta\mathbf{y}_l$
+
+  - 根据 式$\eqref{Complete physical process formula for position integration}$ 和 式$\eqref{The nominal state equation for IMU location prediction}$ ，有
+    $$
+    \delta\mathbf{y}_{l}=\int_{t_{l}}^{t_{l+1}}\left\{\int_{t_{l}}^{\tau}\left[_{b_{s}}^{w}\mathbf{R}\cdot(\mathbf{f}_{ms}-\mathbf{b}_{as}-\mathbf{n}_{as})-_{b_{s}}^{w}\mathbf{\hat{R}}_{s|l}\cdot\left(\mathbf{f}_{ms}-\mathbf{\hat{b}}_{as}\right)\right]ds\right\}d\tau
+    $$
+
+  - 注意到，根据 式$\eqref{Error state equation for acceleration integral}$，可知上式中
+    $$
+    \delta\mathbf{s}_\tau=\int_{t_l}^\tau\left[_{b_s}^w\mathbf{R}\cdot(\mathbf{f}_{ms}-\mathbf{b}_{as}-\mathbf{n}_{as})-_{b_s}^w\mathbf{\hat{R}}_{s|l}\cdot\left(\mathbf{f}_{ms}-\mathbf{\hat{b}}_{as}\right)\right]ds
+    $$
+
+  - 根据 式$\eqref{The linearized expansion of velocity error with respect to accelerometer source error in the IMU error state-space model}$ 与 式$\eqref{The linearized expansion of the velocity error with respect to the attitude source error in the IMU error state-space model}$ 中得结论，并进行积分，有
+    $$
+    \begin{aligned}
+    \delta\mathbf{y}_{l} &= \int_{t_{l}}^{t_{l+1}} \delta\mathbf{s}_\tau d\tau \\
+    &= \int_{t_{l}}^{t_{l+1}} (\delta\mathbf{s}_A + \delta\mathbf{s}_B) d\tau \\
+    &= -\int_{t_{l}}^{t_{l+1}} \left[ \left( \hat{\mathbf{v}}_{\tau \mid l} - \hat{\mathbf{v}}_{l \mid l} - ( \tau - t_{l} ) \mathbf{g}^{w} \right) \times \right] d \tau \cdot \delta \boldsymbol{\theta}_{l \mid l} \\
+    &\quad + \int_{t_{l}}^{t_{l+1}} \left\{ \int_{t_{l}}^{\tau} \left( \left[ \left( \dot{\hat{\mathbf{v}}}_{s} - \mathbf{g}^{w} \right) \times \right] \cdot {}_{b_{l}}^{w} \hat{\mathbf{R}}_{l \mid l} \cdot \left[ \int_{t_{l}}^{s} {}_{b_{m}}^{b_{l}} \hat{\mathbf{R}}_{m \mid l} d m \right] \right) d s \right\} d \tau \cdot \delta \mathbf{b}_{gl \mid l} \\
+    &\quad - {}_{b_{l}}^{w} \hat{\mathbf{R}}_{l \mid l} \cdot \int_{t_{l}}^{t_{l+1}} \left( \int_{t_{l}}^{\tau} {}_{b_{s}}^{b_{l}} \hat{\mathbf{R}}_{s \mid l} d s \right) d \tau \cdot \delta \mathbf{b}_{al \mid l} \\
+    &\quad + \int_{t_{l}}^{t_{l+1}} \mathbf{n}_{v \tau} d \tau
+    \end{aligned}
+    $$
+
+  - 将 **上式** 代入 式$\eqref{Discrete-time Position Error State Update Equation}$，得到 $\delta\mathbf{p}_{l+1|l}$的`状态转移方程`
+    $$
+    \begin{aligned}
+    \delta\mathbf{p}_{l+1|l}&=\Phi_{pq}\left(l+1,l\right)\cdot\delta\boldsymbol{\theta}_{l|l}+\Phi_{pb_{g}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{gl|l}\\&+\Phi_{pv}\left(l+1,l\right)\cdot\delta\mathbf{v}_{l|l}+\Phi_{pb_{a}}\left(l+1,l\right)\cdot\delta\mathbf{b}_{al|l}+\Phi_{pp}\left(l+1,l\right)\cdot\delta\mathbf{p}_{l|l}+\mathbf{n}_{pl+1}
+    \\
+    下一时刻的位置误差 &= 各种误差通过积分传播后的结果
+    \end{aligned}
+    $$
+    其中：
+
+    - $\Phi_{pq}\left(l+1,l\right)=-\int_{t_{l}}^{t_{l+1}}\left[\left(\hat{\mathbf{v}}_{\tau|l}-\hat{\mathbf{v}}_{l|l}-\left(\tau-t_{l}\right)\mathbf{g}^{w}\right)\times\right]d\tau=-\left[\left(\hat{\mathbf{p}}_{l+1|l}-\hat{\mathbf{p}}_{l||l}-\Delta t\cdot\hat{\mathbf{v}}_{l|l}-\frac{1}{2}\Delta t^2\mathbf{g}^w\right)\times\right]$，表示姿态错误导致加速度方向错
+    - $\Phi_{pb_g}\left(l+1,l\right)=\int_{t_l}^{t_{l+1}}\left\{\int_{t_l}^\tau\left(\left[\left(\dot{\hat{\mathbf{v}}}_s-\mathbf{g}^w\right)\times\right]\cdot_{b_l}^w\mathbf{\hat{R}}_{l|l}\cdot\left[\int_{t_l}^s\mathbf{\hat{R}}_{m|l}dm\right]\right)ds\right\}d\tau$，表示陀螺 bias 导致姿态漂移
+    - $\Phi_{pv}\left(l+1,l\right)=\Delta t\cdot\mathbf{I_{3\times3}}$，表示速度误差经过时间积分，变成位置误差
+    - $\Phi_{pb_{a}}\left(l+1,l\right)=-_{b_{l}}^{w}\mathbf{\hat{R}}_{l|l}\cdot\int_{t_{l}}^{t_{l+1}}\left(\int_{t_{l}}^{\tau}\mathbf{\hat{R}}_{s|l}ds\right)d\tau$，表示加速度bias 积分成位置误差
+    - $\boldsymbol{\Phi}_{pp}\left(l+1,l\right)=\mathbf{I}_{3\times3}$，表示当前的位置误差会直接保留到下一时刻
+    - $\mathbf{n}_{pl+1}=\int_{t_l}^{t_{l+1}}\mathbf{n}_{v\tau}d\tau$，表示位置噪声，来自加速度计噪声和陀螺仪噪声
+
+  | 项    | 来源      | 传播路径            | 积分次数 | 物理意义                   |
+  | ----- | --------- | ------------------- | -------- | -------------------------- |
+  | Φpp   | 位置误差  | 直接保留            | 0        | 旧位置误差继续存在         |
+  | Φpv   | 速度误差  | v → p               | 1        | 速度误差积分成位置误差     |
+  | Φpq   | 姿态误差  | θ → a → v → p       | 2        | 姿态错误导致加速度方向错   |
+  | Φpb_a | 加计 bias | bₐ → a → v → p      | 2        | 加速度 bias 积分成位置误差 |
+  | Φpb_g | gyro bias | b_g → θ → a → v → p | 3        | 陀螺 bias 导致姿态漂移     |
+  | n_p   | 噪声      | noise → v → p       | 2        | 传感器噪声                 |
+
+
+
+
+
